@@ -13,6 +13,17 @@ import java.math.BigDecimal
 
 // only a value object
 interface GoodsEntity : Entity<GoodsEntity> {
+    companion object : Entity.Factory<GoodsEntity>() {
+        fun fromDomainModel(goods: Goods): GoodsEntity {
+            return GoodsEntity {
+                var tradeId: Long = 0
+                var desc: String = goods.desc
+                var price: Int = goods.price.toInt()
+                var imgs: List<String> = goods.imgs.map { it.url }
+            }
+        }
+    }
+
     var tradeId: Long
     var desc: String
     var price: Int // in cent
