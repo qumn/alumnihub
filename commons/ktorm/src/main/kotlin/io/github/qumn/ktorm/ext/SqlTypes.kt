@@ -45,7 +45,7 @@ public object IntArraySqlType : SqlType<IntArray>(Types.ARRAY, "int[]") {
 /**
  * Represent values of PostgreSQL `long[]` SQL type.
  */
-public typealias LongArray = Array<Long?>
+public typealias LongArray = Array<Long>
 
 /**
  * Define a column typed [TextArraySqlType].

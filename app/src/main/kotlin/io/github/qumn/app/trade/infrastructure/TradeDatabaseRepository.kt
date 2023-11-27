@@ -21,15 +21,15 @@ class TradeDatabaseRepository(
         }
     }
 
-    fun findPendingTrade(id: Long): PendingTrade? {
+    override fun findPendingTrade(id: Long): PendingTrade? {
         return findById(id) as? PendingTrade
     }
 
-    fun findReservedTrade(id: Long): ReservedTrade? {
+    override fun findReservedTrade(id: Long): ReservedTrade? {
         return findById(id) as? ReservedTrade
     }
 
-    fun findCompletedTrade(id: Long): CompletedTrade? {
+    override fun findCompletedTrade(id: Long): CompletedTrade? {
         return findById(id) as? CompletedTrade
     }
 

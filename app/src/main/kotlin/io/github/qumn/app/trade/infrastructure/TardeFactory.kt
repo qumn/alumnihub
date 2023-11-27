@@ -1,17 +1,30 @@
 package io.github.qumn.app.trade.infrastructure
 
 import io.github.qumn.app.trade.model.*
+import io.github.qumn.framework.module.user.User
 import io.github.qumn.framework.module.user.users
-import io.github.qumn.ktorm.base.database
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.inList
+import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.toMutableList
 import org.springframework.stereotype.Component
+import kotlin.random.Random
 
 @Component
 class TradeFactory(
-    database: Database,
+    val database: Database,
 ) {
+    fun pendingTrade(seller: User, goods: Goods): PendingTrade {
+        return PendingTrade(
+            id = Random(1).nextLong(), // TODO: 使用雪花算法
+            seller = seller,
+            goods = goods,
+            desiredBuyers = mutableListOf()
+        )
+    }
+
     fun toTrade(tradeEntity: TradeEntity): Trade {
         return when (tradeEntity.status) {
             TradeStatus.Pending -> toPendingTrade(tradeEntity)
@@ -20,7 +33,7 @@ class TradeFactory(
         }
     }
 
-    fun toPendingTrade(tradeEntity: TradeEntity): PendingTrade {
+    private fun toPendingTrade(tradeEntity: TradeEntity): PendingTrade {
         require(tradeEntity.status == TradeStatus.Pending) {
             "the status of trade is not pending"
         }
@@ -28,17 +41,21 @@ class TradeFactory(
         val seller = getUser(tradeEntity.sellerId)
         require(seller != null) { "the seller can't be found" }
 
+        val desiredBuyers = database.users
+            .filter { it.uid inList tradeEntity.desiredBuyers.toList() }
+            .toMutableList()
+
         val goods = getGoods(tradeEntity.id)
 
         return PendingTrade(
             tradeEntity.id,
             seller = seller,
-            desiredBuyers = mutableListOf(), // TODO: read from database
+            desiredBuyers = desiredBuyers,
             goods = goods
         )
     }
 
-    fun toReservedTrade(tradeEntity: TradeEntity): ReservedTrade {
+    private fun toReservedTrade(tradeEntity: TradeEntity): ReservedTrade {
         require(tradeEntity.status == TradeStatus.Reserved) {
             "the status of trade is not reserved"
         }
@@ -60,7 +77,7 @@ class TradeFactory(
         )
     }
 
-    fun toCompletedTrade(tradeEntity: TradeEntity): CompletedTrade {
+    private fun toCompletedTrade(tradeEntity: TradeEntity): CompletedTrade {
         require(tradeEntity.status == TradeStatus.Completed) {
             "the status of trade is not completed"
         }
