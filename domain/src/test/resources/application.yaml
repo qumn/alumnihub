@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    password: qumn
+    username: qumn
+    url: jdbc:postgresql://49.235.108.166:5432/qumn
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+    org.ktorm: debug

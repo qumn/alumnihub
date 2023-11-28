@@ -1,4 +1,4 @@
-package io.github.qumn.app.trade.web
+package io.github.qumn.domain.trade.web
 
 import org.springframework.stereotype.Controller
 

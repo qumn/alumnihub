@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":commons:ktorm"))
+    implementation(project(":starter:ktorm-spring-boot-starter"))
+    implementation(libs.spring.boot.starter)
+    testImplementation(libs.spring.boot.test.starter)
 }

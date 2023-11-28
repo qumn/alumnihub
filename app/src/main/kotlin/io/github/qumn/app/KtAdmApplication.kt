@@ -11,7 +11,6 @@ import jakarta.websocket.server.PathParam
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.add
-import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -69,7 +68,7 @@ class UserController(
 
     @GetMapping("/user/:id/friend")
     fun friendOfUser(@PathParam("id") uid: Long): List<User> {
-        val user = database.users.find { it.uid eq uid }
+        val user = database.users.find { it.createdBy eq uid }
             ?: throw IllegalStateException("the user which id is $uid not found")
         return user.friends
     }

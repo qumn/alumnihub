@@ -12,6 +12,7 @@ plugins {
 
 rootProject.name = "alumnihub"
 include("app")
+include("domain")
 include("commons:ktorm")
 include("framework")
 include("starter:ktorm-spring-boot-starter")
@@ -28,7 +29,12 @@ dependencyResolutionManagement {
             library("spring-boot-starter", "org.springframework.boot", "spring-boot-starter").withoutVersion()
             library("spring-boot-web-starter", "org.springframework.boot", "spring-boot-starter-web").withoutVersion()
             library("spring-boot-jdbc-starter", "org.springframework.boot", "spring-boot-starter-data-jdbc").withoutVersion()
+            library("spring-boot-test-starter", "org.springframework.boot", "spring-boot-starter-test").withoutVersion()
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
+
+            // test
+            library("mockk", "io.mockk", "mockk").version("1.13.8")
+            library("spring-mockk", "com.ninja-squad", "springmockk").version("4.0.2")
 
             // database
             library("h2", "com.h2database", "h2").withoutVersion()

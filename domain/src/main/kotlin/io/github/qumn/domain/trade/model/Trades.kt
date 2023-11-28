@@ -1,6 +1,6 @@
-package io.github.qumn.app.trade.model
+package io.github.qumn.domain.trade.model
 
-interface TradeRepository {
+interface Trades {
     fun findById(id: Long) : Trade?
 
     fun findPendingTrade(id: Long): PendingTrade?

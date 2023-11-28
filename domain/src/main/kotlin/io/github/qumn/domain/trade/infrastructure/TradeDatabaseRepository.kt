@@ -1,6 +1,6 @@
-package io.github.qumn.app.trade.infrastructure
+package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.app.trade.model.*
+import io.github.qumn.domain.trade.model.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.add
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository
 @Repository
 class TradeDatabaseRepository(
     val database: Database,
-    val domainModelMapper: DomainModelMapper,
-) : TradeRepository {
+    val tradeDomainModelMapper: TradeDomainModelMapper,
+) : io.github.qumn.domain.trade.model.Trades {
     override fun findById(id: Long): Trade? {
         return findEntityById(id)?.let {
-            domainModelMapper.toTrade(it)
+            tradeDomainModelMapper.toTrade(it)
         }
     }
 
@@ -32,7 +32,7 @@ class TradeDatabaseRepository(
     }
 
     private fun findEntityById(id: Long): TradeEntity? {
-        return database.trades.find { it.id eq id }
+        return database.trades.find { Trades.id eq id }
     }
 
     /**
@@ -59,11 +59,13 @@ class TradeDatabaseRepository(
     }
 
     private fun insertPendingTrade(trade: PendingTrade) {
+        val goodsEntity = GoodsEntity.fromDomainModel(trade.goods)
+        database.goods.add(goodsEntity)
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Pending
             desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
-            goods = GoodsEntity.fromDomainModel(trade.goods)
+            goods = goodsEntity
             sellerId = trade.seller.uid
         }
         database.trades.add(tradeEntity)
@@ -94,7 +96,7 @@ class TradeDatabaseRepository(
             id = trade.id
             status = TradeStatus.Reserved
             buyerId = trade.buyer.uid
-            reservedTime = trade.reservedTime
+            reservedAt = trade.reservedAt
         }
         database.trades.update(tradeEntity)
     }
@@ -103,7 +105,7 @@ class TradeDatabaseRepository(
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Completed
-            completedTime = trade.completedTime
+            completedAt = trade.completedAt
         }
         database.trades.update(tradeEntity)
     }

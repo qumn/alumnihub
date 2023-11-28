@@ -1,4 +1,4 @@
-package io.github.qumn.app.trade.model
+package io.github.qumn.domain.trade.model
 
 import java.math.BigDecimal
 

@@ -1,16 +1,7 @@
-package io.github.qumn.app.trade.model
+package io.github.qumn.domain.trade.model
 
-import io.github.qumn.framework.module.user.User
+import io.github.qumn.framework.domain.user.model.User
 import java.time.Instant
-
-data class School(
-    val id: Long,
-)
-
-//data class User(
-//    val id: Long,
-//    val school: Long,
-//);
 
 sealed interface Trade {
     val id: Long
@@ -29,9 +20,6 @@ data class PendingTrade(
     val desiredBuyers: MutableList<User>,
 ) : Trade {
     fun desiredBy(buyer: User) {
-//        require(buyer.school == seller.school) {
-//            "the school of buyer and seller is not same"
-//        }
         this.desiredBuyers.add(buyer)
     }
 
@@ -55,7 +43,7 @@ data class ReservedTrade(
     override val goods: Goods,
     override val seller: User,
     val buyer: User,
-    val reservedTime: Instant,
+    val reservedAt: Instant,
 ) : Trade {
     fun complete(): CompletedTrade {
         return CompletedTrade(
@@ -74,6 +62,6 @@ data class CompletedTrade(
     override val goods: Goods,
     override val seller: User,
     val buyer: User,
-    val completedTime: Instant,
+    val completedAt: Instant,
 ) : Trade {
 }

@@ -1,12 +1,11 @@
-package io.github.qumn.app.trade.infrastructure
+package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.ktorm.base.BaseEntity
-import io.github.qumn.ktorm.base.BaseTable
 import io.github.qumn.ktorm.ext.LongArray
 import io.github.qumn.ktorm.ext.longArray
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
+import org.ktorm.schema.Table
 import org.ktorm.schema.enum
 import org.ktorm.schema.long
 import org.ktorm.schema.timestamp
@@ -18,7 +17,7 @@ enum class TradeStatus {
     Completed
 }
 
-interface TradeEntity : BaseEntity<TradeEntity> {
+interface TradeEntity : Entity<TradeEntity> {
     companion object : Entity.Factory<TradeEntity>()
 
     var id: Long
@@ -29,20 +28,23 @@ interface TradeEntity : BaseEntity<TradeEntity> {
     var sellerId: Long
     var buyerId: Long?
 
-    var reservedTime: Instant?
-    var completedTime: Instant?
+    var reservedAt: Instant?
+    var completedAt: Instant?
+    val createdAt: Instant
+    val updatedAt: Instant
 }
 
-object Trades : BaseTable<TradeEntity>("biz_trade") {
+object Trades : Table<TradeEntity>("biz_trade") {
     val id = long("id").primaryKey().bindTo { it.id }
     val status = enum<TradeStatus>("status").bindTo { it.status }
-    private val goodsId = long("goods_id").references(GoodsTable){ it.goods }
-    val goods = goodsId.referenceTable as GoodsTable
+    val goodsId = long("goods_id").references(GoodsTable) { it.goods }
     val sellerId = long("seller_id").bindTo { it.sellerId }
-    val desiredBuyers = longArray("desired_buyer_ids").bindTo { it.desiredBuyers }
     val buyerId = long("buyer_id").bindTo { it.buyerId }
-    val reservedTime = timestamp("reserved_time").bindTo { it.reservedTime }
-    val completedTime = timestamp("completed_time").bindTo { it.completedTime }
+    val desiredBuyers = longArray("desired_buyer_ids").bindTo { it.desiredBuyers }
+    val reservedAt = timestamp("reserved_at").bindTo { it.reservedAt }
+    val completedAt = timestamp("completed_at").bindTo { it.completedAt }
+    val createdAt = timestamp("created_at").bindTo { it.createdAt }
+    val updatedAt = timestamp("updated_at").bindTo { it.updatedAt }
 }
 
 val Database.trades get() = this.sequenceOf(Trades)

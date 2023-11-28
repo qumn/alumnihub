@@ -27,8 +27,8 @@ inline fun <reified T> Entity<*>.lazyFetch(name: String, loader: () -> T): T {
 
 
 interface BaseEntity<E : BaseEntity<E>> : Entity<E> {
-    var uid: Long
-    var deptId: Long
+    var createdBy: Long
+//    var deptId: Long
     var deleted: Boolean
     var createdAt: Instant
     var updatedAt: Instant
@@ -54,8 +54,8 @@ abstract class BaseTable<E : BaseEntity<E>>(
     }
 
     // TODO: impl data permission control
-    val uid = long(userIdColumn).bindTo { it.uid }
-    val deptId = long(deptIdColumn).bindTo { it.deptId }
+    val createdBy = long(userIdColumn).bindTo { it.createdBy }
+//    val deptId = long(deptIdColumn).bindTo { it.deptId }
 
     val deleted = boolean("deleted").logicalDeleted().bindTo { it.deleted }
     val createdAt = timestamp("created_at").fillAtInsert { Instant.now() }.bindTo { it.createdAt }

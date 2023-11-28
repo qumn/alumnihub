@@ -1,18 +1,16 @@
-package io.github.qumn.app.trade.infrastructure
+package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.app.trade.model.*
-import io.github.qumn.framework.module.user.users
+import io.github.qumn.domain.trade.model.*
+import io.github.qumn.framework.domain.user.model.Users
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
-import org.ktorm.dsl.inList
-import org.ktorm.entity.filter
 import org.ktorm.entity.find
-import org.ktorm.entity.toMutableList
 import org.springframework.stereotype.Component
 
 @Component
-class DomainModelMapper(
+class TradeDomainModelMapper(
     val database: Database,
+    val users: Users,
 ) {
 
     fun toTrade(tradeEntity: TradeEntity): Trade {
@@ -28,11 +26,10 @@ class DomainModelMapper(
             "the status of trade is not pending"
         }
 
-        val seller = getUser(tradeEntity.sellerId)
+        val seller = users.findById(tradeEntity.sellerId)
         require(seller != null) { "the seller can't be found" }
 
-        val desiredBuyers = database.users
-            .filter { it.uid inList tradeEntity.desiredBuyers.toList() }
+        val desiredBuyers = users.findByIds(tradeEntity.desiredBuyers.toList())
             .toMutableList()
 
         val goods = getGoods(tradeEntity.goods.id)
@@ -50,8 +47,8 @@ class DomainModelMapper(
             "the status of trade is not reserved"
         }
 
-        val seller = getUser(tradeEntity.sellerId)
-        val buyer = getUser(tradeEntity.buyerId!!)
+        val seller = users.findById(tradeEntity.sellerId)
+        val buyer = users.findById(tradeEntity.buyerId!!)
 
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
@@ -63,7 +60,7 @@ class DomainModelMapper(
             seller = seller,
             buyer = buyer,
             goods = goods,
-            reservedTime = tradeEntity.reservedTime!!
+            reservedAt = tradeEntity.reservedAt!!
         )
     }
 
@@ -72,8 +69,8 @@ class DomainModelMapper(
             "the status of trade is not completed"
         }
 
-        val seller = getUser(tradeEntity.sellerId)
-        val buyer = getUser(tradeEntity.buyerId!!)
+        val seller = users.findById(tradeEntity.sellerId)
+        val buyer = users.findById(tradeEntity.buyerId!!)
 
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
@@ -85,15 +82,12 @@ class DomainModelMapper(
             seller = seller,
             buyer = buyer,
             goods = goods,
-            completedTime = tradeEntity.completedTime!!
+            completedAt = tradeEntity.completedAt!!
         )
     }
 
-    private fun getUser(uid: Long) =
-        database.users.find { it.uid eq uid }
-
     private fun getGoods(goodsId: Long): Goods {
-        return database.goods.find { it.id eq goodsId }
+        return database.goods.find { GoodsTable.id eq goodsId }
             .let {
                 require(it != null) { "goods not exist" }
                 it.toDomainModel()
