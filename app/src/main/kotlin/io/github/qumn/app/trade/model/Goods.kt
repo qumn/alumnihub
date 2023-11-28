@@ -8,6 +8,7 @@ data class Img(
 )
 
 data class Goods(
+    val id: Long,
     val desc: String,
     val imgs: List<Img>,
     val price: BigDecimal

@@ -36,6 +36,8 @@ interface TradeEntity : BaseEntity<TradeEntity> {
 object Trades : BaseTable<TradeEntity>("biz_trade") {
     val id = long("id").primaryKey().bindTo { it.id }
     val status = enum<TradeStatus>("status").bindTo { it.status }
+    private val goodsId = long("goods_id").references(GoodsTable){ it.goods }
+    val goods = goodsId.referenceTable as GoodsTable
     val sellerId = long("seller_id").bindTo { it.sellerId }
     val desiredBuyers = longArray("desired_buyer_ids").bindTo { it.desiredBuyers }
     val buyerId = long("buyer_id").bindTo { it.buyerId }

@@ -1,23 +1,21 @@
 package io.github.qumn.app.trade.infrastructure
 
 import io.github.qumn.app.trade.model.*
-import io.github.qumn.ktorm.ext.LongArray
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.add
 import org.ktorm.entity.find
-import org.ktorm.entity.removeIf
 import org.ktorm.entity.update
 import org.springframework.stereotype.Repository
 
 @Repository
 class TradeDatabaseRepository(
     val database: Database,
-    val tradeFactory: TradeFactory,
+    val domainModelMapper: DomainModelMapper,
 ) : TradeRepository {
     override fun findById(id: Long): Trade? {
         return findEntityById(id)?.let {
-            tradeFactory.toTrade(it)
+            domainModelMapper.toTrade(it)
         }
     }
 
@@ -49,8 +47,28 @@ class TradeDatabaseRepository(
         }
     }
 
+    /**
+     * Insert a new trade to database
+     */
     private fun insertNew(trade: Trade) {
+        when (trade) {
+            is PendingTrade -> insertPendingTrade(trade)
+            is ReservedTrade -> throw IllegalArgumentException("can not directly insert a reserved trade")
+            is CompletedTrade -> throw IllegalArgumentException("can not directly insert a completed trade")
+        }
     }
+
+    private fun insertPendingTrade(trade: PendingTrade) {
+        val tradeEntity = TradeEntity {
+            id = trade.id
+            status = TradeStatus.Pending
+            desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
+            goods = GoodsEntity.fromDomainModel(trade.goods)
+            sellerId = trade.seller.uid
+        }
+        database.trades.add(tradeEntity)
+    }
+
 
     private fun updateTrade(trade: Trade) {
         when (trade) {
@@ -63,18 +81,30 @@ class TradeDatabaseRepository(
     private fun savePendingTrade(trade: PendingTrade) {
         val tradeEntity = TradeEntity {
             id = trade.id
+            status = TradeStatus.Pending
             desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
         }
         database.trades.update(tradeEntity)
-        database.goods.removeIf { it.tradeId eq trade.id }
-        database.goods.add(GoodsEntity.fromDomainModel(trade.goods))
+        // update the goods, only pending trade can update the goods
+        database.goods.update(GoodsEntity.fromDomainModel(trade.goods))
     }
 
     private fun saveReservedTrade(trade: ReservedTrade) {
-
+        val tradeEntity = TradeEntity {
+            id = trade.id
+            status = TradeStatus.Reserved
+            buyerId = trade.buyer.uid
+            reservedTime = trade.reservedTime
+        }
+        database.trades.update(tradeEntity)
     }
 
     private fun saveCompletedTrade(trade: CompletedTrade) {
-
+        val tradeEntity = TradeEntity {
+            id = trade.id
+            status = TradeStatus.Completed
+            completedTime = trade.completedTime
+        }
+        database.trades.update(tradeEntity)
     }
 }

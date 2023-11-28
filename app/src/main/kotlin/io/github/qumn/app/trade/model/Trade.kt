@@ -28,7 +28,7 @@ data class PendingTrade(
     override val seller: User, // the seller id
     val desiredBuyers: MutableList<User>,
 ) : Trade {
-    fun desire(buyer: User) {
+    fun desiredBy(buyer: User) {
 //        require(buyer.school == seller.school) {
 //            "the school of buyer and seller is not same"
 //        }
@@ -55,7 +55,7 @@ data class ReservedTrade(
     override val goods: Goods,
     override val seller: User,
     val buyer: User,
-    val reserveTime: Instant,
+    val reservedTime: Instant,
 ) : Trade {
     fun complete(): CompletedTrade {
         return CompletedTrade(

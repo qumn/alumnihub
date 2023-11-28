@@ -16,7 +16,7 @@ interface GoodsEntity : Entity<GoodsEntity> {
     companion object : Entity.Factory<GoodsEntity>() {
         fun fromDomainModel(goods: Goods): GoodsEntity {
             return GoodsEntity {
-                var tradeId: Long = 0
+                var id = goods.id
                 var desc: String = goods.desc
                 var price: Int = goods.price.toInt()
                 var imgs: List<String> = goods.imgs.map { it.url }
@@ -24,12 +24,13 @@ interface GoodsEntity : Entity<GoodsEntity> {
         }
     }
 
-    var tradeId: Long
+    var id: Long
     var desc: String
     var price: Int // in cent
     var imgs: List<String>
     fun toDomainModel(): Goods {
         return Goods(
+            id = this.id,
             desc = this.desc,
             price = BigDecimal(this.price),
             imgs = this.imgs.map(::Img)
@@ -38,7 +39,7 @@ interface GoodsEntity : Entity<GoodsEntity> {
 }
 
 object GoodsTable : Table<GoodsEntity>("biz_goods") {
-    val tradeId = long("trade_id").primaryKey().bindTo { it.tradeId }
+    val id = long("trade_id").primaryKey().bindTo { it.id }
     val desc = varchar("desc").bindTo { it.desc }
     val price = int("desc").bindTo { it.price }
     // TODO: make list image

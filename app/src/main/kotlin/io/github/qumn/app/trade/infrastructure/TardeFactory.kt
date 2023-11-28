@@ -1,7 +1,6 @@
 package io.github.qumn.app.trade.infrastructure
 
 import io.github.qumn.app.trade.model.*
-import io.github.qumn.framework.module.user.User
 import io.github.qumn.framework.module.user.users
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -10,20 +9,11 @@ import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.toMutableList
 import org.springframework.stereotype.Component
-import kotlin.random.Random
 
 @Component
-class TradeFactory(
+class DomainModelMapper(
     val database: Database,
 ) {
-    fun pendingTrade(seller: User, goods: Goods): PendingTrade {
-        return PendingTrade(
-            id = Random(1).nextLong(), // TODO: 使用雪花算法
-            seller = seller,
-            goods = goods,
-            desiredBuyers = mutableListOf()
-        )
-    }
 
     fun toTrade(tradeEntity: TradeEntity): Trade {
         return when (tradeEntity.status) {
@@ -45,7 +35,7 @@ class TradeFactory(
             .filter { it.uid inList tradeEntity.desiredBuyers.toList() }
             .toMutableList()
 
-        val goods = getGoods(tradeEntity.id)
+        val goods = getGoods(tradeEntity.goods.id)
 
         return PendingTrade(
             tradeEntity.id,
@@ -66,14 +56,14 @@ class TradeFactory(
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
 
-        val goods = getGoods(tradeEntity.id)
+        val goods = getGoods(tradeEntity.goods.id)
 
         return ReservedTrade(
             tradeEntity.id,
             seller = seller,
             buyer = buyer,
             goods = goods,
-            reserveTime = tradeEntity.reservedTime!!
+            reservedTime = tradeEntity.reservedTime!!
         )
     }
 
@@ -88,7 +78,7 @@ class TradeFactory(
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
 
-        val goods = getGoods(tradeEntity.id)
+        val goods = getGoods(tradeEntity.goods.id)
 
         return CompletedTrade(
             tradeEntity.id,
@@ -102,8 +92,8 @@ class TradeFactory(
     private fun getUser(uid: Long) =
         database.users.find { it.uid eq uid }
 
-    private fun getGoods(tradeId: Long): Goods {
-        return database.goods.find { it.tradeId eq tradeId }
+    private fun getGoods(goodsId: Long): Goods {
+        return database.goods.find { it.id eq goodsId }
             .let {
                 require(it != null) { "goods not exist" }
                 it.toDomainModel()
