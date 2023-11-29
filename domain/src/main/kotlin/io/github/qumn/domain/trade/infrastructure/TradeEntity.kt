@@ -1,10 +1,12 @@
 package io.github.qumn.domain.trade.infrastructure
 
+import io.github.qumn.domain.trade.model.Goods
 import io.github.qumn.ktorm.ext.LongArray
 import io.github.qumn.ktorm.ext.longArray
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
+import org.ktorm.jackson.json
 import org.ktorm.schema.Table
 import org.ktorm.schema.enum
 import org.ktorm.schema.long
@@ -37,7 +39,7 @@ interface TradeEntity : Entity<TradeEntity> {
 object Trades : Table<TradeEntity>("biz_trade") {
     val id = long("id").primaryKey().bindTo { it.id }
     val status = enum<TradeStatus>("status").bindTo { it.status }
-    val goodsId = long("goods_id").references(GoodsTable) { it.goods }
+    val goods = json<GoodsEntity>("goods").bindTo { it.goods }
     val sellerId = long("seller_id").bindTo { it.sellerId }
     val buyerId = long("buyer_id").bindTo { it.buyerId }
     val desiredBuyers = longArray("desired_buyer_ids").bindTo { it.desiredBuyers }

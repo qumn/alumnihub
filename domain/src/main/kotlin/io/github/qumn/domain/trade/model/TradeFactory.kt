@@ -18,7 +18,6 @@ class TradeFactory {
 
         private fun createGoods(goodsDesc: String, goodsPrice: Int, goodsImgs: List<String>): Goods {
             return Goods(
-                id = Random(System.currentTimeMillis()).nextLong(), // TODO: 使用雪花算法
                 desc = goodsDesc,
                 imgs = goodsImgs.map { Img(it) },
                 price = BigDecimal(goodsPrice)

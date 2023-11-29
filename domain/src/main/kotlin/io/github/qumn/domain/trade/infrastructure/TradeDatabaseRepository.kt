@@ -1,6 +1,9 @@
 package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.domain.trade.model.*
+import io.github.qumn.domain.trade.model.CompletedTrade
+import io.github.qumn.domain.trade.model.PendingTrade
+import io.github.qumn.domain.trade.model.ReservedTrade
+import io.github.qumn.domain.trade.model.Trade
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.add
@@ -60,7 +63,6 @@ class TradeDatabaseRepository(
 
     private fun insertPendingTrade(trade: PendingTrade) {
         val goodsEntity = GoodsEntity.fromDomainModel(trade.goods)
-        database.goods.add(goodsEntity)
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Pending
@@ -74,24 +76,24 @@ class TradeDatabaseRepository(
 
     private fun updateTrade(trade: Trade) {
         when (trade) {
-            is PendingTrade -> savePendingTrade(trade)
-            is ReservedTrade -> saveReservedTrade(trade)
-            is CompletedTrade -> saveCompletedTrade(trade)
+            is PendingTrade -> updatePendingTrade(trade)
+            is ReservedTrade -> updateReservedTrade(trade)
+            is CompletedTrade -> updateCompletedTrade(trade)
         }
     }
 
-    private fun savePendingTrade(trade: PendingTrade) {
+    private fun updatePendingTrade(trade: PendingTrade) {
+        val goodsEntity = GoodsEntity.fromDomainModel(trade.goods)
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Pending
+            goods = goodsEntity
             desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
         }
         database.trades.update(tradeEntity)
-        // update the goods, only pending trade can update the goods
-        database.goods.update(GoodsEntity.fromDomainModel(trade.goods))
     }
 
-    private fun saveReservedTrade(trade: ReservedTrade) {
+    private fun updateReservedTrade(trade: ReservedTrade) {
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Reserved
@@ -101,7 +103,7 @@ class TradeDatabaseRepository(
         database.trades.update(tradeEntity)
     }
 
-    private fun saveCompletedTrade(trade: CompletedTrade) {
+    private fun updateCompletedTrade(trade: CompletedTrade) {
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Completed

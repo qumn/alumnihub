@@ -1,10 +1,11 @@
 package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.domain.trade.model.*
+import io.github.qumn.domain.trade.model.CompletedTrade
+import io.github.qumn.domain.trade.model.PendingTrade
+import io.github.qumn.domain.trade.model.ReservedTrade
+import io.github.qumn.domain.trade.model.Trade
 import io.github.qumn.framework.domain.user.model.Users
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.entity.find
 import org.springframework.stereotype.Component
 
 @Component
@@ -32,13 +33,12 @@ class TradeDomainModelMapper(
         val desiredBuyers = users.findByIds(tradeEntity.desiredBuyers.toList())
             .toMutableList()
 
-        val goods = getGoods(tradeEntity.goods.id)
 
         return PendingTrade(
             tradeEntity.id,
             seller = seller,
             desiredBuyers = desiredBuyers,
-            goods = goods
+            goods = tradeEntity.goods.toDomainModel()
         )
     }
 
@@ -53,13 +53,11 @@ class TradeDomainModelMapper(
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
 
-        val goods = getGoods(tradeEntity.goods.id)
-
         return ReservedTrade(
             tradeEntity.id,
             seller = seller,
             buyer = buyer,
-            goods = goods,
+            goods = tradeEntity.goods.toDomainModel(),
             reservedAt = tradeEntity.reservedAt!!
         )
     }
@@ -75,22 +73,12 @@ class TradeDomainModelMapper(
         require(seller != null) { "the seller can't be found" }
         require(buyer != null) { "the buyer can't be found" }
 
-        val goods = getGoods(tradeEntity.goods.id)
-
         return CompletedTrade(
             tradeEntity.id,
             seller = seller,
             buyer = buyer,
-            goods = goods,
+            goods = tradeEntity.goods.toDomainModel(),
             completedAt = tradeEntity.completedAt!!
         )
-    }
-
-    private fun getGoods(goodsId: Long): Goods {
-        return database.goods.find { GoodsTable.id eq goodsId }
-            .let {
-                require(it != null) { "goods not exist" }
-                it.toDomainModel()
-            }
     }
 }

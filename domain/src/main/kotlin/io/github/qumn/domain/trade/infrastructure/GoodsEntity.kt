@@ -2,49 +2,51 @@ package io.github.qumn.domain.trade.infrastructure
 
 import io.github.qumn.domain.trade.model.Goods
 import io.github.qumn.domain.trade.model.Img
-import org.ktorm.database.Database
-import org.ktorm.entity.Entity
-import org.ktorm.entity.sequenceOf
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
-import org.ktorm.support.postgresql.textArray
-import java.math.BigDecimal
 
 // only a value object
-interface GoodsEntity : Entity<GoodsEntity> {
-    companion object : Entity.Factory<GoodsEntity>() {
+data class GoodsEntity(
+    var intro: String,
+    var price: Int, // in cent
+    val imgs: Array<String>?,
+) {
+    companion object {
         fun fromDomainModel(goods: Goods): GoodsEntity {
-            return GoodsEntity {
-                id = goods.id
-                intro = goods.desc
-                price = goods.price.toInt()
+            return GoodsEntity(
+                intro = goods.desc,
+                price = goods.price.toInt(),
                 imgs = goods.imgs.map { it.url }.toTypedArray()
-            }
+            )
         }
     }
 
-    var id: Long
-    var intro: String
-    var price: Int // in cent
-    var imgs: Array<String?>?
-    fun toDomainModel(): Goods {
+    fun toDomainModel() : Goods {
         return Goods(
-            id = this.id,
-            desc = this.intro,
-            price = BigDecimal(this.price),
-            imgs = this.imgs?.filterNotNull()?.map(::Img) ?: listOf()
+            desc = intro,
+            price = price.toBigDecimal(),
+            imgs = imgs?.map { Img(it) } ?: emptyList()
         )
     }
-}
 
-object GoodsTable : Table<GoodsEntity>("biz_goods") {
-    val id = long("id").primaryKey().bindTo { it.id }
-    val intro = varchar("intro").bindTo { it.intro }
-    val price = int("price").bindTo { it.price }
-    val imgs = textArray("imgs").bindTo { it.imgs }
-    // TODO: make list image
-}
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-val Database.goods get() = this.sequenceOf(io.github.qumn.domain.trade.infrastructure.GoodsTable)
+        other as GoodsEntity
+
+        if (intro != other.intro) return false
+        if (price != other.price) return false
+        if (imgs != null) {
+            if (other.imgs == null) return false
+            if (!imgs.contentEquals(other.imgs)) return false
+        } else if (other.imgs != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = intro.hashCode()
+        result = 31 * result + price
+        result = 31 * result + (imgs?.contentHashCode() ?: 0)
+        return result
+    }
+}
