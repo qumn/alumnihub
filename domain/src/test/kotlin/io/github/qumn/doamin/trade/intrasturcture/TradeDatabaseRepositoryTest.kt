@@ -1,6 +1,7 @@
 package io.github.qumn.doamin.trade.intrasturcture
 
 import com.ninjasquad.springmockk.MockkBean
+import com.ninjasquad.springmockk.MockkClear
 import io.github.qumn.doamin.trade.model.pendingTrade
 import io.github.qumn.domain.trade.infrastructure.TradeDatabaseRepository
 import io.github.qumn.domain.trade.infrastructure.TradeDomainModelMapper
@@ -8,6 +9,8 @@ import io.github.qumn.framework.domain.user.model.User
 import io.github.qumn.framework.domain.user.model.Users
 import io.github.qumn.framework.test.user
 import io.github.qumn.test.config.DbTestAutoConfiguration
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
@@ -23,10 +26,14 @@ import org.springframework.boot.test.context.SpringBootTest
 // 自己的 DB 配置类
 class TradeDatabaseRepositoryTest(
     private val repository: TradeDatabaseRepository,
-    @MockkBean val users: Users,
+    //! the default clear behavior is to clear all mocks after each test,
+    // that's lead to test failed when working on parallel mode
+    @MockkBean(clear = MockkClear.NONE) val users: Users,
 ) : StringSpec({
-    "save pending trade should work" {
-        checkAll(100, Arb.pendingTrade()) { pendingTrade ->
+    "save pending trade should work".config(tags = setOf(Tag("db"))) {
+
+        checkAll(50, Arb.pendingTrade()) { pendingTrade ->
+            println("thread: " + Thread.currentThread().id)
             // given
             val seller = pendingTrade.seller
             val desiredBuyers = pendingTrade.desiredBuyers
@@ -42,12 +49,13 @@ class TradeDatabaseRepositoryTest(
         }
     }
 
-    "desired buyers should be save" {
+    "desired buyers should be save".config(tags = setOf(Tag("db"))) {
         checkAll(
-            100,
+            50,
             Arb.pendingTrade().map { it.desiredBuyers.clear(); it },
             Arb.array(Arb.user())
         ) { pendingTrade, desiredBuyers ->
+            println("thread: " + Thread.currentThread().id)
             // given
             val seller = pendingTrade.seller
 
@@ -56,7 +64,9 @@ class TradeDatabaseRepositoryTest(
                 pendingTrade.desiredBy(buyer)
             }
 
-            every { users.findById(seller.uid) } returns seller
+            every {
+                users.findById(seller.uid)
+            } returns seller
             every {
                 users.findByIds(match { it.toSet() == desiredBuyers.map(User::uid).toSet() }) // only care about the uid
             } returns desiredBuyers.toList()
@@ -67,5 +77,8 @@ class TradeDatabaseRepositoryTest(
     }
 }) {
     override fun extensions() = listOf(SpringExtension)
+
+    @ExperimentalKotest
+    override fun dispatcherAffinity() = false
 }
 

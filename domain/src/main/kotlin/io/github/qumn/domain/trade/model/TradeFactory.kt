@@ -1,6 +1,8 @@
 package io.github.qumn.domain.trade.model
 
 import io.github.qumn.framework.domain.user.model.User
+import io.github.qumn.util.id.IdUtil
+import io.github.qumn.util.id.nextId
 import java.math.BigDecimal
 import kotlin.random.Random
 
@@ -9,7 +11,7 @@ class TradeFactory {
         fun create(seller: User, goodsDesc: String, goodsPrice: Int, goodsImgs: List<String>): PendingTrade {
             val goods = createGoods(goodsDesc, goodsPrice, goodsImgs)
             return PendingTrade(
-                id = Random(System.currentTimeMillis()).nextLong(), // TODO: 使用雪花算法
+                id = IdUtil.nextId(),
                 seller = seller,
                 goods = goods,
                 desiredBuyers = mutableListOf()

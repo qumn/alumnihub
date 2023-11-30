@@ -6,6 +6,9 @@ plugins {
 dependencies {
     implementation(project(":starter:ktorm-spring-boot-starter"))
     implementation(project(":commons:util"))
+    api(libs.spring.mockk)
     api("io.kotest:kotest-property-jvm:5.8.0")
-    implementation(libs.spring.boot.test.starter)
+    api(libs.spring.boot.test.starter) {
+        exclude(module = "mockito-core")
+    }
 }

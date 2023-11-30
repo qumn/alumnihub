@@ -6,6 +6,6 @@ dependencies {
     implementation(project(":starter:ktorm-spring-boot-starter"))
     implementation(project(":commons:test"))
 
-    implementation(libs.spring.boot.starter)
-    testImplementation(libs.spring.boot.test.starter)
+    api(libs.spring.boot.starter)
+    testApi(libs.spring.boot.test.starter)
 }

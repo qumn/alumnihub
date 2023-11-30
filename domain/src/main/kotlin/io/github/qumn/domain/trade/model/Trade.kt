@@ -15,8 +15,8 @@ sealed interface Trade {
  */
 data class PendingTrade(
     override val id: Long,
-    override val goods: Goods,
     override val seller: User, // the seller id
+    override val goods: Goods,
     val desiredBuyers: MutableList<User>,
 ) : Trade {
     fun desiredBy(buyer: User) {

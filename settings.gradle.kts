@@ -35,7 +35,7 @@ dependencyResolutionManagement {
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 
             // test
-            library("mockk", "io.mockk", "mockk").version("1.13.8")
+//            library("mockk", "io.mockk", "mockk").version("1.13.6")
             library("spring-mockk", "com.ninja-squad", "springmockk").version("4.0.2")
 
             // database
