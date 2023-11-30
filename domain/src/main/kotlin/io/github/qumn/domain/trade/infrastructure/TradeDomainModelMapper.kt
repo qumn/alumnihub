@@ -30,7 +30,7 @@ class TradeDomainModelMapper(
         val seller = users.findById(tradeEntity.sellerId)
         require(seller != null) { "the seller can't be found" }
 
-        val desiredBuyers = users.findByIds(tradeEntity.desiredBuyers.toList())
+        val desiredBuyers = users.findByIds(tradeEntity.desiredBuyers.toSet())
             .toMutableList()
 
 

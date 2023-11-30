@@ -24,9 +24,6 @@ data class PendingTrade(
     }
 
     fun reserve(buyer: User): ReservedTrade {
-//        require(buyer.school == seller.school) {
-//            "the school of buyer and seller is not same"
-//        }
         return ReservedTrade(
             this.id,
             this.goods,

@@ -16,7 +16,7 @@ class UserRepository(
     val database: Database,
 ) : Users {
 
-    override fun findByIds(uids: List<Long>): List<User> {
+    override fun findByIds(uids: Collection<Long>): List<User> {
         return database.users.filter { it.uid inList uids }.map {
             userDomainModelMapper.toUser(it)
         }
