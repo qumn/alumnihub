@@ -14,6 +14,8 @@ rootProject.name = "alumnihub"
 include("app")
 include("domain")
 include("commons:ktorm")
+include("commons:test")
+include("commons:util")
 include("framework")
 include("starter:ktorm-spring-boot-starter")
 

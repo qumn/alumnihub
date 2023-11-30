@@ -1,4 +1,4 @@
-package io.github.qumn.framework.test
+package io.github.qumn.test.config
 
 import io.github.qumn.starter.ktorm.KtormAutoConfiguration
 import org.springframework.boot.autoconfigure.AutoConfiguration
