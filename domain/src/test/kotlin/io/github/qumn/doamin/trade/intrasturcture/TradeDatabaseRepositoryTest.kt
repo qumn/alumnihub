@@ -8,32 +8,26 @@ import io.github.qumn.domain.trade.infrastructure.TradeDomainModelMapper
 import io.github.qumn.framework.domain.user.model.User
 import io.github.qumn.framework.domain.user.model.Users
 import io.github.qumn.framework.test.user
-import io.github.qumn.test.config.DbTestAutoConfiguration
+import io.github.qumn.test.DBIntegrationSpec
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.Tag
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.array
 import io.kotest.property.arbitrary.map
 import io.kotest.property.checkAll
 import io.mockk.every
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 
-
-@SpringBootTest(classes = [TradeDatabaseRepository::class, TradeDomainModelMapper::class, DbTestAutoConfiguration::class])
+@Import(value = [TradeDatabaseRepository::class, TradeDomainModelMapper::class])
 // 自己的 DB 配置类
 class TradeDatabaseRepositoryTest(
     private val repository: TradeDatabaseRepository,
     //! the default clear behavior is to clear all mocks after each test,
     // that's lead to test failed when working on parallel mode
     @MockkBean(clear = MockkClear.NONE) val users: Users,
-) : StringSpec({
-    "save pending trade should work".config(tags = setOf(Tag("db"))) {
-
-        checkAll(50, Arb.pendingTrade()) { pendingTrade ->
-            println("thread: " + Thread.currentThread().id)
+) : DBIntegrationSpec({
+    "save pending trade should work" {
+        checkAll(100, Arb.pendingTrade()) { pendingTrade ->
             // given
             val seller = pendingTrade.seller
             val desiredBuyers = pendingTrade.desiredBuyers
@@ -49,13 +43,12 @@ class TradeDatabaseRepositoryTest(
         }
     }
 
-    "desired buyers should be save".config(tags = setOf(Tag("db"))) {
+    "desired buyers should be save" {
         checkAll(
-            50,
+            100,
             Arb.pendingTrade().map { it.desiredBuyers.clear(); it },
             Arb.array(Arb.user())
         ) { pendingTrade, desiredBuyers ->
-            println("thread: " + Thread.currentThread().id)
             // given
             val seller = pendingTrade.seller
 
@@ -76,8 +69,6 @@ class TradeDatabaseRepositoryTest(
         }
     }
 }) {
-    override fun extensions() = listOf(SpringExtension)
-
     @ExperimentalKotest
     override fun dispatcherAffinity() = false
 }

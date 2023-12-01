@@ -40,7 +40,7 @@ abstract class BaseTable<E : BaseEntity<E>>(
     catalog: String? = null,
     schema: String? = null,
     entityClass: KClass<E>? = null,
-    userIdColumn: String = "uid",
+    userIdColumn: String = "created_by",
     deptIdColumn: String = "dept_id",
 ) : Table<E>(
     tableName,

@@ -7,5 +7,4 @@ dependencies {
     implementation(project(":commons:test"))
 
     api(libs.spring.boot.starter)
-    testApi(libs.spring.boot.test.starter)
 }

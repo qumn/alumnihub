@@ -1,14 +1,23 @@
 plugins {
     id("io.github.qumn.kotlin-library-conventions")
 }
+// define testcontainers version
 
 
 dependencies {
-    implementation(project(":starter:ktorm-spring-boot-starter"))
-    implementation(project(":commons:util"))
+    // kotest
+    api(libs.kotest.junit5)
+    api(libs.kotest.property)
+    implementation(libs.kotest.extensions.spring)
+    // test container
+    implementation(libs.kotest.extensions.testcontainers)
+    implementation(libs.testcontainers.postgresql)
+
     api(libs.spring.mockk)
-    api("io.kotest:kotest-property-jvm:5.8.0")
     api(libs.spring.boot.test.starter) {
         exclude(module = "mockito-core")
     }
+
+    implementation(project(":starter:ktorm-spring-boot-starter"))
+    implementation(project(":commons:util"))
 }

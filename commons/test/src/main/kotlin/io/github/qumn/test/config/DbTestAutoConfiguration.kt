@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Import
 @Import(
     value = [
         KtormAutoConfiguration::class,
-        DataSourceAutoConfiguration::class
+        DataSourceAutoConfiguration::class,
     ]
 )
-public class DbTestAutoConfiguration {
-
-}
+public class DbTestAutoConfiguration
