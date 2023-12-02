@@ -3,21 +3,10 @@
  */
 package io.github.qumn.app
 
-import io.github.qumn.framework.module.user.User
-import io.github.qumn.framework.module.user.Users
-import io.github.qumn.framework.module.user.users
-import io.github.qumn.ktorm.ext.disableLogicalDeleted
-import jakarta.websocket.server.PathParam
 import org.ktorm.database.Database
-import org.ktorm.dsl.*
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.toList
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -25,19 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 class KtAdmApplication
 
 fun main(args: Array<String>) {
-//    KtormAutoConfiguration
     runApplication<KtAdmApplication>(*args)
 }
 
-data class CreateUserReq(
-    val name: String,
-) {
-    fun toEntity(): User {
-        val user = User()
-        user.name = name
-        return user
-    }
-}
 
 @RestController
 class UserController(
@@ -46,30 +25,5 @@ class UserController(
     @GetMapping
     fun hello(): String {
         return "hello"
-    }
-
-    @GetMapping("/user")
-    fun users(): List<User> {
-        return database.users.toList()
-    }
-
-    @PostMapping("/user")
-    fun create(@RequestBody createUserReq: CreateUserReq): Boolean {
-        database.users.add(createUserReq.toEntity())
-        return true
-    }
-
-
-    @GetMapping("/list")
-    fun usersUsingDsl(): List<User> {
-        return database.from(Users).select().where { Users.name notEq "zs" }.disableLogicalDeleted()
-            .map { Users.createEntity(it) }
-    }
-
-    @GetMapping("/user/:id/friend")
-    fun friendOfUser(@PathParam("id") uid: Long): List<User> {
-        val user = database.users.find { it.createdBy eq uid }
-            ?: throw IllegalStateException("the user which id is $uid not found")
-        return user.friends
     }
 }
