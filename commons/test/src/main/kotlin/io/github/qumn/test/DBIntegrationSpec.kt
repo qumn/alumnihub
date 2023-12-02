@@ -12,6 +12,7 @@ public abstract class DBIntegrationSpec(body: StringSpec.() -> Unit = {}) : Stri
     companion object {
         private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer("postgres:14").apply {
             withInitScript("init.sql")
+            withReuse(true)
         }
 
         init {

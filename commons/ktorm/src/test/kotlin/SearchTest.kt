@@ -1,5 +1,6 @@
 import io.github.qumn.ktorm.search.*
-import org.junit.jupiter.api.Test
+import io.github.qumn.test.DBIntegrationSpec
+import org.ktorm.database.Database
 import org.ktorm.entity.single
 import org.ktorm.entity.take
 import org.ktorm.entity.toList
@@ -7,7 +8,9 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 
 
-class SearchTest : BaseTest() {
+class SearchTest(
+    database: Database,
+) : DBIntegrationSpec({
 
     data class DepartmentReq(
         val id: Int? = null,
@@ -25,8 +28,7 @@ class SearchTest : BaseTest() {
         @Operation(columnName = "departmentId") val department: DepartmentReq? = null,
     )
 
-    @Test
-    fun likeShouldWorkApiSearchShouldWork() {
+    "likeShouldWorkApiSearchShouldWork" {
         val employeeReq = EmployeeReq(name = "m")
         val departments = database.employees.search(employeeReq).toList()
         departments.forEach {
@@ -34,8 +36,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun rLikeShouldWorkApiSearchShouldWork() {
+    "rLikeShouldWorkApiSearchShouldWork" {
         val employeeReq = EmployeeReq(job = "e")
         val departments = database.employees.search(employeeReq).toList()
         departments.forEach {
@@ -44,8 +45,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun betweenShouldWork() {
+    "betweenShouldWork" {
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
         val employeeReq = EmployeeReq(hireDate = arrayOf(begin, end))
@@ -55,8 +55,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun betweenOnlyRightEndShouldWork() {
+    "betweenOnlyRightEndShouldWork" {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
@@ -67,8 +66,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun betweenOnlyLeftEndShouldWork() {
+    "betweenOnlyLeftEndShouldWork" {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
@@ -79,8 +77,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun nestedShouldWork() {
+    "nestedShouldWork".config(invocations = 10) {
         val departmentReq = DepartmentReq(name = "e")
         val employeeReq = EmployeeReq(department = departmentReq)
         val departments = database.employees.search(employeeReq).toList()
@@ -89,14 +86,7 @@ class SearchTest : BaseTest() {
         }
     }
 
-    @Test
-    fun cacheShouldWork() {
-        nestedShouldWork()
-        nestedShouldWork()
-    }
-
-    @Test
-    fun testOneToMany() {
+    "testOneToMany" {
         val department = database.departments.take(1).single()
         val db = database
 
@@ -104,10 +94,4 @@ class SearchTest : BaseTest() {
         println(employees)
     }
 
-    fun test() {
-        val department: Department? = null
-        department?.employees
-
-    }
-
-}
+})

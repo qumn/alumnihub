@@ -52,7 +52,7 @@ abstract class BaseTest {
                 alwaysQuoteIdentifiers = true, dialect = dialect
             )
         io.github.qumn.ktorm.base.database = database
-        execSqlScript("init-data.sql")
+        execSqlScript("init.sql")
     }
 
     @AfterEach

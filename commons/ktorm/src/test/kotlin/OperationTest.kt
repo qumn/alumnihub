@@ -1,5 +1,6 @@
 import io.github.qumn.ktorm.ext.*
-import org.junit.jupiter.api.Test
+import io.github.qumn.test.DBIntegrationSpec
+import org.ktorm.database.Database
 import org.ktorm.dsl.from
 import org.ktorm.dsl.like
 import org.ktorm.dsl.map
@@ -11,98 +12,88 @@ import java.sql.Date
 import java.time.Instant
 import java.util.*
 
-public class OperationTest : BaseTest() {
+public class OperationTest(database: Database) : DBIntegrationSpec({
 
-    @Test
-    fun dateTruncDateValueShouldWork() {
-        database.from(Departments).select(
+    "date trunc date value should work" {
+        database.from(BaseTest.Departments).select(
             dateTrunc(Interval.DAY, Date())
         ).map {
             println(it.getDate(1))
         }
     }
 
-    @Test
-    fun dateTruncInstantValueShouldWork() {
+    "dateTruncInstantValueShouldWork" {
         database.departments
             .filter { it.name like "zs" }
             .totalRecordsInAllPages
-        database.from(Departments).select(
+        database.from(BaseTest.Departments).select(
             dateTrunc(Interval.DAY, Instant.now())
         ).map {
             println(it.getDate(1))
         }
     }
 
-    @Test
-    fun dateTruncInstantColumnShouldWork() {
-        database.from(Departments).select(
-            dateTrunc(Interval.DAY, Departments.createdAt)
+    "dateTruncInstantColumnShouldWork" {
+        database.from(BaseTest.Departments).select(
+            dateTrunc(Interval.DAY, BaseTest.Departments.createdAt)
         ).map {
             println(it.getDate(1))
         }
     }
 
-    @Test
-    fun toCharInstantValueShouldWork() {
-        database.from(Departments).select(
+    "toCharInstantValueShouldWork" {
+        database.from(BaseTest.Departments).select(
             toChar(Instant.now(), "YYYY-MM-DD")
         ).map {
             println(it.getString(1))
         }
     }
 
-    @Test
-    fun toCharIntervalValueShouldWork() {
-        database.from(Departments).select(
+    "toCharIntervalValueShouldWork" {
+        database.from(BaseTest.Departments).select(
             toChar(Interval(years = 22, months = 11, days = 3, hours = 3), "YYYY-MM-DD")
         ).map {
             println(it.getString(1))
         }
     }
 
-    @Test
-    fun toCharIntervalColumnShouldWork() {
-        database.from(Departments).select(
-            toChar(Departments.createdAt, "YYYY-MM-DD")
+    "toCharIntervalColumnShouldWork" {
+        database.from(BaseTest.Departments).select(
+            toChar(BaseTest.Departments.createdAt, "YYYY-MM-DD")
         ).map {
             println(it.getString(1))
         }
     }
 
-    @Test
-    fun dateMinusIntShouldWord() {
-        database.from(Departments).select(
+    "dateMinusIntShouldWord" {
+        database.from(BaseTest.Departments).select(
             currentDate() - 3
         ).map {
             println(it.getDate(1))
         }
     }
 
-    @Test
-    fun dateMinusIntervalShouldWord() {
-        database.from(Departments).select(
+    "dateMinusIntervalShouldWord" {
+        database.from(BaseTest.Departments).select(
             currentStamp() - Interval(years = 2, months = 3, days = 4, hours = 5)
         ).map {
             println(it.getInstant(1))
         }
     }
 
-    @Test
-    fun instantMinusInstantShouldWord() {
-        database.from(Departments).select(
-            Departments.createdAt - (Departments.createdAt - Interval(days = 2))
+    "instantMinusInstantShouldWord" {
+        database.from(BaseTest.Departments).select(
+            BaseTest.Departments.createdAt - (BaseTest.Departments.createdAt - Interval(days = 2))
         ).map {
             println(it.getString(1))
         }
     }
 
 
-    @Test
-    fun intervalPlusIntervalShouldWork() {
-        database.from(Departments).select(
+    "intervalPlusIntervalShouldWork" {
+        database.from(BaseTest.Departments).select(
             ArgumentExpression(Interval(days = 2), IntervalSqlType) + Interval(days = 2) + Interval(days = 2),
-            Departments.createdAt + ArgumentExpression(
+            BaseTest.Departments.createdAt + ArgumentExpression(
                 Interval(days = 2),
                 IntervalSqlType
             ) + Interval(days = 2) + Interval(days = 2)
@@ -112,12 +103,11 @@ public class OperationTest : BaseTest() {
         }
     }
 
-    @Test
-    fun dateMinusDateShouldWork() {
-        database.from(Departments).select(
+    "dateMinusDateShouldWork" {
+        database.from(BaseTest.Departments).select(
             ArgumentExpression(Date(Date().time), DateSqlType) - java.sql.Date(Date().time)
         ).map {
             println(it.getInt(1))
         }
     }
-}
+})
