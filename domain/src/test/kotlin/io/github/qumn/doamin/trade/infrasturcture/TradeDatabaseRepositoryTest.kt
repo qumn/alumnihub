@@ -48,7 +48,19 @@ class TradeDatabaseRepositoryTest(
             repository.save(reservedTrade)
             users.mockFor(reservedTrade)
 
-            repository.findReservedTrade(reservedTrade.id)?.reservedAt shouldBe reservedTrade.reservedAt
+            repository.findReservedTrade(reservedTrade.id) shouldBe reservedTrade
+        }
+    }
+
+    "save completed trade should work" {
+        checkAll(100, Arb.pendingTrade(), Arb.user()) { pendingTrade, buyer ->
+            repository.save(pendingTrade)
+            val reservedTrade = pendingTrade.reserve(buyer)
+            repository.save(reservedTrade)
+            val completedTrade = reservedTrade.complete()
+            repository.save(completedTrade)
+            users.mockFor(completedTrade)
+            repository.findCompletedTrade(completedTrade.id) shouldBe completedTrade
         }
     }
 
