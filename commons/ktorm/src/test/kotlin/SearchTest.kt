@@ -1,8 +1,6 @@
 import io.github.qumn.ktorm.search.*
 import io.github.qumn.test.DBIntegrationSpec
 import org.ktorm.database.Database
-import org.ktorm.entity.single
-import org.ktorm.entity.take
 import org.ktorm.entity.toList
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -28,7 +26,7 @@ class SearchTest(
         @Operation(columnName = "departmentId") val department: DepartmentReq? = null,
     )
 
-    "likeShouldWorkApiSearchShouldWork" {
+    "like should work api search should work" {
         val employeeReq = EmployeeReq(name = "m")
         val departments = database.employees.search(employeeReq).toList()
         departments.forEach {
@@ -36,7 +34,7 @@ class SearchTest(
         }
     }
 
-    "rLikeShouldWorkApiSearchShouldWork" {
+    "rLike should work api search should work" {
         val employeeReq = EmployeeReq(job = "e")
         val departments = database.employees.search(employeeReq).toList()
         departments.forEach {
@@ -45,7 +43,7 @@ class SearchTest(
         }
     }
 
-    "betweenShouldWork" {
+    "between should work" {
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
         val employeeReq = EmployeeReq(hireDate = arrayOf(begin, end))
@@ -55,7 +53,7 @@ class SearchTest(
         }
     }
 
-    "betweenOnlyRightEndShouldWork" {
+    "between only right end should work" {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
@@ -66,7 +64,7 @@ class SearchTest(
         }
     }
 
-    "betweenOnlyLeftEndShouldWork" {
+    "between only left end should work" {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val begin = LocalDate.of(2017, 12, 30)
         val end = LocalDate.of(2018, 2, 1)
@@ -77,7 +75,7 @@ class SearchTest(
         }
     }
 
-    "nestedShouldWork".config(invocations = 10) {
+    "nested should work".config(invocations = 10) {
         val departmentReq = DepartmentReq(name = "e")
         val employeeReq = EmployeeReq(department = departmentReq)
         val departments = database.employees.search(employeeReq).toList()
@@ -85,13 +83,4 @@ class SearchTest(
             println(it)
         }
     }
-
-    "testOneToMany" {
-        val department = database.departments.take(1).single()
-        val db = database
-
-        val employees = department.employees
-        println(employees)
-    }
-
 })

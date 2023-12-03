@@ -13,7 +13,6 @@ import java.time.Instant
 import java.util.*
 
 public class OperationTest(database: Database) : DBIntegrationSpec({
-
     "date trunc date value should work" {
         database.from(BaseTest.Departments).select(
             dateTrunc(Interval.DAY, Date())
@@ -22,7 +21,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "dateTruncInstantValueShouldWork" {
+    "date trunc instant value shouldWork" {
         database.departments
             .filter { it.name like "zs" }
             .totalRecordsInAllPages
@@ -33,7 +32,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "dateTruncInstantColumnShouldWork" {
+    "date trunc instant column should work" {
         database.from(BaseTest.Departments).select(
             dateTrunc(Interval.DAY, BaseTest.Departments.createdAt)
         ).map {
@@ -41,7 +40,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "toCharInstantValueShouldWork" {
+    "to char instant value should work" {
         database.from(BaseTest.Departments).select(
             toChar(Instant.now(), "YYYY-MM-DD")
         ).map {
@@ -49,7 +48,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "toCharIntervalValueShouldWork" {
+    "to char interval value should work" {
         database.from(BaseTest.Departments).select(
             toChar(Interval(years = 22, months = 11, days = 3, hours = 3), "YYYY-MM-DD")
         ).map {
@@ -57,7 +56,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "toCharIntervalColumnShouldWork" {
+    "to char interval column should work" {
         database.from(BaseTest.Departments).select(
             toChar(BaseTest.Departments.createdAt, "YYYY-MM-DD")
         ).map {
@@ -65,7 +64,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "dateMinusIntShouldWord" {
+    "date minus int should word" {
         database.from(BaseTest.Departments).select(
             currentDate() - 3
         ).map {
@@ -73,7 +72,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "dateMinusIntervalShouldWord" {
+    "date minus interval should word" {
         database.from(BaseTest.Departments).select(
             currentStamp() - Interval(years = 2, months = 3, days = 4, hours = 5)
         ).map {
@@ -81,7 +80,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "instantMinusInstantShouldWord" {
+    "instant minus instant should word" {
         database.from(BaseTest.Departments).select(
             BaseTest.Departments.createdAt - (BaseTest.Departments.createdAt - Interval(days = 2))
         ).map {
@@ -90,7 +89,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
     }
 
 
-    "intervalPlusIntervalShouldWork" {
+    "interval plus interval should work" {
         database.from(BaseTest.Departments).select(
             ArgumentExpression(Interval(days = 2), IntervalSqlType) + Interval(days = 2) + Interval(days = 2),
             BaseTest.Departments.createdAt + ArgumentExpression(
@@ -103,7 +102,7 @@ public class OperationTest(database: Database) : DBIntegrationSpec({
         }
     }
 
-    "dateMinusDateShouldWork" {
+    "date minus date should work" {
         database.from(BaseTest.Departments).select(
             ArgumentExpression(Date(Date().time), DateSqlType) - java.sql.Date(Date().time)
         ).map {
