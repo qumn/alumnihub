@@ -1,10 +1,14 @@
-package io.github.qumn.doamin.trade.intrasturcture
+package io.github.qumn.doamin.trade.infrasturcture
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkClear
-import io.github.qumn.doamin.trade.model.pendingTrade
+import io.github.qumn.doamin.trade.arb.pendingTrade
 import io.github.qumn.domain.trade.infrastructure.TradeDatabaseRepository
 import io.github.qumn.domain.trade.infrastructure.TradeDomainModelMapper
+import io.github.qumn.domain.trade.model.CompletedTrade
+import io.github.qumn.domain.trade.model.PendingTrade
+import io.github.qumn.domain.trade.model.ReservedTrade
+import io.github.qumn.domain.trade.model.Trade
 import io.github.qumn.framework.domain.user.model.User
 import io.github.qumn.framework.domain.user.model.Users
 import io.github.qumn.framework.test.user
@@ -29,17 +33,22 @@ class TradeDatabaseRepositoryTest(
     "save pending trade should work" {
         checkAll(100, Arb.pendingTrade()) { pendingTrade ->
             // given
-            val seller = pendingTrade.seller
-            val desiredBuyers = pendingTrade.desiredBuyers
-            every { users.findById(seller.uid) } returns seller
-            every {
-                users.findByIds(
-                    desiredBuyers.map(User::uid).toSet()
-                )
-            } returns desiredBuyers // be used in desired buyers
-
             repository.save(pendingTrade)
+            users.mockFor(pendingTrade)
             repository.findPendingTrade(pendingTrade.id) shouldBe pendingTrade
+        }
+    }
+
+    "save reserved trade should work" {
+        checkAll(100, Arb.pendingTrade(), Arb.user()) { pendingTrade, buyer ->
+            // save the pending trade
+            repository.save(pendingTrade)
+
+            val reservedTrade = pendingTrade.reserve(buyer)
+            repository.save(reservedTrade)
+            users.mockFor(reservedTrade)
+
+            repository.findReservedTrade(reservedTrade.id)?.reservedAt shouldBe reservedTrade.reservedAt
         }
     }
 
@@ -49,22 +58,12 @@ class TradeDatabaseRepositoryTest(
             Arb.pendingTrade().map { it.desiredBuyers.clear(); it },
             Arb.array(Arb.user())
         ) { pendingTrade, desiredBuyers ->
-            // given
-            val seller = pendingTrade.seller
-
             // clear the desiredBuyers be filled arb
             for (buyer in desiredBuyers) {
                 pendingTrade.desiredBy(buyer)
             }
-
-            every {
-                users.findById(seller.uid)
-            } returns seller
-            every {
-                users.findByIds(match { it.toSet() == desiredBuyers.map(User::uid).toSet() }) // only care about the uid
-            } returns desiredBuyers.toList()
-
             repository.save(pendingTrade)
+            users.mockFor(pendingTrade)
             repository.findPendingTrade(pendingTrade.id) shouldBe pendingTrade
         }
     }
@@ -73,3 +72,27 @@ class TradeDatabaseRepositoryTest(
     override fun dispatcherAffinity() = false
 }
 
+fun Users.mockFor(trade: Trade) {
+    val users = this
+    val seller = trade.seller
+    every { users.findById(seller.uid) } returns seller
+
+    when (trade) {
+        is PendingTrade -> {
+            val desiredBuyers = trade.desiredBuyers
+            every {
+                users.findByIds(
+                    desiredBuyers.map(User::uid).toSet()
+                )
+            } returns desiredBuyers // be used in desired buyers
+        }
+
+        is ReservedTrade -> {
+            every { users.findById(trade.buyer.uid) } returns trade.buyer
+        }
+
+        is CompletedTrade -> {
+            every { users.findById(trade.buyer.uid) } returns trade.buyer
+        }
+    }
+}

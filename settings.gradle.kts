@@ -69,9 +69,8 @@ dependencyResolutionManagement {
             // database
             library("h2", "com.h2database", "h2").withoutVersion()
             library("postgresql", "org.postgresql", "postgresql").withoutVersion()
-        }
-        create("project") {
-            library("ktorm-starter", project(":starter:ktorm-spring-boot-starter").toString())
+            // logging
+            library("logging", "io.github.oshai", "kotlin-logging-jvm").version("5.1.0")
         }
     }
 }

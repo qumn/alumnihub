@@ -1,7 +1,9 @@
 package io.github.qumn.domain.trade.model
 
 import io.github.qumn.framework.domain.user.model.User
+import io.github.qumn.util.time.nowMicros
 import java.time.Instant
+
 
 sealed interface Trade {
     val id: Long
@@ -29,7 +31,7 @@ data class PendingTrade(
             this.goods,
             this.seller,
             buyer,
-            Instant.now()
+            nowMicros()
         )
     }
 
@@ -48,7 +50,7 @@ data class ReservedTrade(
             this.goods,
             this.seller,
             this.buyer,
-            Instant.now()
+            nowMicros()
         )
     }
 

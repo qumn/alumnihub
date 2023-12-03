@@ -1,4 +1,4 @@
-package io.github.qumn.doamin.trade.model
+package io.github.qumn.doamin.trade.arb
 
 import io.github.qumn.domain.trade.model.Goods
 import io.github.qumn.domain.trade.model.Img

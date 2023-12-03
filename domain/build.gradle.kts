@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.logging)
     implementation(project(":commons:util"))
     implementation(project(":framework"))
     implementation(project(":starter:ktorm-spring-boot-starter"))
