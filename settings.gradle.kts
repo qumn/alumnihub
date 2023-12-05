@@ -38,6 +38,8 @@ dependencyResolutionManagement {
                 "spring-boot-starter-data-jdbc"
             ).withoutVersion()
             library("spring-boot-test-starter", "org.springframework.boot", "spring-boot-starter-test").withoutVersion()
+            library("spring-boot-testcontainers", "org.springframework.boot", "spring-boot-testcontainers").withoutVersion()
+
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 
             // ktorm

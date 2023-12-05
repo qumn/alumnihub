@@ -3,8 +3,10 @@ package io.github.qumn.test;
 import javax.sql.DataSource
 
 public class DBIntegrationSpecTest(
-    val dataSource: DataSource,
+    dataSource: DataSource
 ) : DBIntegrationSpec({
+    "spring construct di should work" {
+    }
     "DBIntegrationSpec should work" {
         dataSource.connection.use { connection ->
             connection.createStatement().use { statement ->
