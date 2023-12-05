@@ -20,11 +20,13 @@ include("framework")
 include("starter:ktorm-spring-boot-starter")
 
 
-val ktormVersion = "3.6.0"
-val testcontainersVersion = "1.19.3"
-val kotestVersion = "5.8.0"
-val kotestExtensionSpringVersion = "1.1.3"
-val kotestExtensionTestContainersVersion = "2.0.2"
+val ktormVersion: String by settings
+val testcontainersVersion: String by settings
+val kotestVersion: String by settings
+val kotestExtensionSpringVersion: String by settings
+val kotestExtensionTestContainersVersion: String by settings
+val kotlinLoggingVersion: String by settings
+val springmockkVersion: String by settings
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -38,7 +40,11 @@ dependencyResolutionManagement {
                 "spring-boot-starter-data-jdbc"
             ).withoutVersion()
             library("spring-boot-test-starter", "org.springframework.boot", "spring-boot-starter-test").withoutVersion()
-            library("spring-boot-testcontainers", "org.springframework.boot", "spring-boot-testcontainers").withoutVersion()
+            library(
+                "spring-boot-testcontainers",
+                "org.springframework.boot",
+                "spring-boot-testcontainers"
+            ).withoutVersion()
 
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 
@@ -61,7 +67,7 @@ dependencyResolutionManagement {
                 "io.kotest.extensions",
                 "kotest-extensions-testcontainers"
             ).version(kotestExtensionTestContainersVersion)
-            library("spring-mockk", "com.ninja-squad", "springmockk").version("4.0.2")
+            library("spring-mockk", "com.ninja-squad", "springmockk").version(springmockkVersion)
 
             // TestContainers
             library("testcontainers-core", "org.testcontainers", "testcontainers").version(testcontainersVersion)
@@ -72,7 +78,7 @@ dependencyResolutionManagement {
             library("h2", "com.h2database", "h2").withoutVersion()
             library("postgresql", "org.postgresql", "postgresql").withoutVersion()
             // logging
-            library("logging", "io.github.oshai", "kotlin-logging-jvm").version("5.1.0")
+            library("logging", "io.github.oshai", "kotlin-logging-jvm").version(kotlinLoggingVersion)
         }
     }
 }
