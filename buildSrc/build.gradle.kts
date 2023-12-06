@@ -16,8 +16,6 @@ File(projectDir.parentFile, "gradle.properties").inputStream().use {
     }
 }
 
-// 使用 versions 映射，可以在这里执行其他操作
-
 
 plugins {
     // Support convention plugins written in Kotlin. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.

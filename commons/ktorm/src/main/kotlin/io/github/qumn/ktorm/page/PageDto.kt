@@ -7,7 +7,7 @@ data class PageParam(
         (pageNo - 1) * pageSize,
 )
 
-data class PageRst<T>(
+data class Page<T>(
     val list: List<T>,
     val total: Int,
     val pageNo: Int,
@@ -21,13 +21,13 @@ data class PageRst<T>(
             total / pageSize + 1,
 ) {
     companion object {
-        fun <T> empty(pageNo: Int, pageSize: Int): PageRst<T> =
-            PageRst(listOf(), 0, pageNo, pageSize)
+        fun <T> empty(pageNo: Int, pageSize: Int): Page<T> =
+            Page(listOf(), 0, pageNo, pageSize)
 
-        fun <T> of(list: List<T>, total: Int, pageNo: Int, pageSize: Int): PageRst<T> =
-            PageRst(list, total, pageNo, pageSize)
+        fun <T> of(list: List<T>, total: Int, pageNo: Int, pageSize: Int): Page<T> =
+            Page(list, total, pageNo, pageSize)
 
-        fun <T> of(list: List<T>, total: Int, pageParam: PageParam): PageRst<T> =
-            PageRst(list, total, pageParam.pageNo, pageParam.pageSize)
+        fun <T> of(list: List<T>, total: Int, pageParam: PageParam): Page<T> =
+            Page(list, total, pageParam.pageNo, pageParam.pageSize)
     }
 }

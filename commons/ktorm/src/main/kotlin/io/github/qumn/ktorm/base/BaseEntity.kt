@@ -14,10 +14,6 @@ const val INSERT_FILL_COLUMNS: String = "INSERT_FILL_COLUMNS"
 const val LOGICAL_DELETED_COLUMN: String = "LOGICAL_DELETED_COLUMN"
 const val ENTITY_CLASS_PROPERTY_KEY: String = "ENTITY_CLASS_PROPERTY_KEY"
 
-//interface DBContext {
-//    val database: Database
-//}
-// the global database
 // todo: use local thread, so that can use many database
 lateinit var database: Database
 
@@ -25,10 +21,8 @@ inline fun <reified T> Entity<*>.lazyFetch(name: String, loader: () -> T): T {
     return this[name] as? T ?: loader().also { this[name] = it }
 }
 
-
 interface BaseEntity<E : BaseEntity<E>> : Entity<E> {
     var createdBy: Long
-//    var deptId: Long
     var deleted: Boolean
     var createdAt: Instant
     var updatedAt: Instant
@@ -41,7 +35,6 @@ abstract class BaseTable<E : BaseEntity<E>>(
     schema: String? = null,
     entityClass: KClass<E>? = null,
     userIdColumn: String = "created_by",
-    deptIdColumn: String = "dept_id",
 ) : Table<E>(
     tableName,
     alias,
@@ -55,7 +48,6 @@ abstract class BaseTable<E : BaseEntity<E>>(
 
     // TODO: impl data permission control
     val createdBy = long(userIdColumn).bindTo { it.createdBy }
-//    val deptId = long(deptIdColumn).bindTo { it.deptId }
 
     val deleted = boolean("deleted").logicalDeleted().bindTo { it.deleted }
     val createdAt = timestamp("created_at").fillAtInsert { Instant.now() }.bindTo { it.createdAt }
