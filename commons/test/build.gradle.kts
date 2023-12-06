@@ -9,6 +9,7 @@ dependencies {
     api(libs.kotest.junit5)
     api(libs.kotest.property)
     implementation(libs.kotest.extensions.spring)
+    implementation(libs.logging)
     // test container
     implementation(libs.kotest.extensions.testcontainers)
     implementation(libs.testcontainers.postgresql)

@@ -1,11 +1,14 @@
 package io.github.qumn.test;
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import javax.sql.DataSource
 
 public class DBIntegrationSpecTest(
-    dataSource: DataSource
+    dataSource: DataSource,
 ) : DBIntegrationSpec({
+    val logger = KotlinLogging.logger {}
     "spring construct di should work" {
+        logger.info { "hello" }
     }
     "DBIntegrationSpec should work" {
         dataSource.connection.use { connection ->
