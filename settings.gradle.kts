@@ -45,6 +45,7 @@ dependencyResolutionManagement {
                 "org.springframework.boot",
                 "spring-boot-testcontainers"
             ).withoutVersion()
+            library("spring-boot-security", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
 
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 
