@@ -1,6 +1,5 @@
 package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.domain.trade.model.Goods
 import io.github.qumn.ktorm.ext.LongArray
 import io.github.qumn.ktorm.ext.longArray
 import org.ktorm.database.Database
@@ -24,7 +23,7 @@ interface TradeEntity : Entity<TradeEntity> {
 
     var id: Long
     var status: TradeStatus
-    var desiredBuyers: LongArray
+    var desiredBuyerIds: LongArray
 
     var goods: GoodsEntity
     var sellerId: Long
@@ -42,7 +41,7 @@ object Trades : Table<TradeEntity>("biz_trade") {
     val goods = json<GoodsEntity>("goods").bindTo { it.goods }
     val sellerId = long("seller_id").bindTo { it.sellerId }
     val buyerId = long("buyer_id").bindTo { it.buyerId }
-    val desiredBuyers = longArray("desired_buyer_ids").bindTo { it.desiredBuyers }
+    val desiredBuyerIds = longArray("desired_buyer_ids").bindTo { it.desiredBuyerIds }
     val reservedAt = timestamp("reserved_at").bindTo { it.reservedAt }
     val completedAt = timestamp("completed_at").bindTo { it.completedAt }
     val createdAt = timestamp("created_at").bindTo { it.createdAt }

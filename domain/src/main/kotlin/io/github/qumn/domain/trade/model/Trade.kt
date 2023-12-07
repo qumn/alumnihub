@@ -8,7 +8,7 @@ import java.time.Instant
 sealed interface Trade {
     val id: Long
     val goods: Goods
-    val seller: User
+    val sellerId: Long
 }
 
 /**
@@ -17,20 +17,20 @@ sealed interface Trade {
  */
 data class PendingTrade(
     override val id: Long,
-    override val seller: User, // the seller id
+    override val sellerId: Long, // the seller id
     override val goods: Goods,
-    val desiredBuyers: MutableList<User>,
+    val desiredBuyerIds: MutableList<Long>,
 ) : Trade {
     fun desiredBy(buyer: User) {
-        this.desiredBuyers.add(buyer)
+        this.desiredBuyerIds.add(buyer.uid)
     }
 
     fun reserve(buyer: User): ReservedTrade {
         return ReservedTrade(
             this.id,
             this.goods,
-            this.seller,
-            buyer,
+            this.sellerId,
+            buyer.uid,
             nowMicros()
         )
     }
@@ -40,16 +40,16 @@ data class PendingTrade(
 data class ReservedTrade(
     override val id: Long,
     override val goods: Goods,
-    override val seller: User,
-    val buyer: User,
+    override val sellerId: Long,
+    val buyerId: Long,
     val reservedAt: Instant,
 ) : Trade {
     fun complete(): CompletedTrade {
         return CompletedTrade(
             this.id,
             this.goods,
-            this.seller,
-            this.buyer,
+            this.sellerId,
+            this.buyerId,
             nowMicros()
         )
     }
@@ -59,8 +59,8 @@ data class ReservedTrade(
 data class CompletedTrade(
     override val id: Long,
     override val goods: Goods,
-    override val seller: User,
-    val buyer: User,
+    override val sellerId: Long,
+    val buyerId: Long,
     val completedAt: Instant,
 ) : Trade {
 }

@@ -10,9 +10,9 @@ import io.kotest.property.arbitrary.*
 
 
 fun Arb.Companion.pendingTrade() = Arb.bind(
-    Arb.id(), Arb.user(), Arb.array(Arb.user()).map { it.toMutableList() }, Arb.goods()
-) { tradeId, seller, tradeDesiredBuyers, tradeGoods ->
-    PendingTrade(id = tradeId, seller = seller, desiredBuyers = tradeDesiredBuyers, goods = tradeGoods)
+    Arb.id(), Arb.id(), Arb.array(Arb.long()).map { it.toMutableList() }, Arb.goods()
+) { tradeId, sellerId, tradeDesiredBuyerIds, tradeGoods ->
+    PendingTrade(id = tradeId, sellerId = sellerId, desiredBuyerIds = tradeDesiredBuyerIds, goods = tradeGoods)
 }
 
 fun Arb.Companion.goods() = Arb.bind(

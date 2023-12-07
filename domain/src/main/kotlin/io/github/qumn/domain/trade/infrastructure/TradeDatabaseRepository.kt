@@ -14,12 +14,9 @@ import org.springframework.stereotype.Repository
 @Repository
 class TradeDatabaseRepository(
     val database: Database,
-    val tradeDomainModelMapper: TradeDomainModelMapper,
 ) : io.github.qumn.domain.trade.model.Trades {
     override fun findById(id: Long): Trade? {
-        return findEntityById(id)?.let {
-            tradeDomainModelMapper.toTrade(it)
-        }
+        return findEntityById(id)?.toDomain()
     }
 
     override fun findPendingTrade(id: Long): PendingTrade? {
@@ -66,9 +63,9 @@ class TradeDatabaseRepository(
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Pending
-            desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
+            desiredBuyerIds = trade.desiredBuyerIds.toTypedArray()
             goods = goodsEntity
-            sellerId = trade.seller.uid
+            sellerId = trade.sellerId
         }
         database.trades.add(tradeEntity)
     }
@@ -88,7 +85,7 @@ class TradeDatabaseRepository(
             id = trade.id
             status = TradeStatus.Pending
             goods = goodsEntity
-            desiredBuyers = trade.desiredBuyers.map { it.uid }.toTypedArray()
+            desiredBuyerIds = trade.desiredBuyerIds.toTypedArray()
         }
         database.trades.update(tradeEntity)
     }
@@ -97,7 +94,7 @@ class TradeDatabaseRepository(
         val tradeEntity = TradeEntity {
             id = trade.id
             status = TradeStatus.Reserved
-            buyerId = trade.buyer.uid
+            buyerId = trade.buyerId
             reservedAt = trade.reservedAt
         }
         database.trades.update(tradeEntity)
