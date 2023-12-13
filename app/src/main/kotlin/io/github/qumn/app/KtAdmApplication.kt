@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["io.github.qumn"])
 class KtAdmApplication
 
 fun main(args: Array<String>) {
@@ -24,6 +24,6 @@ class UserController(
 ) {
     @GetMapping
     fun hello(): String {
-        return "hello"
+        return "hello1"
     }
 }

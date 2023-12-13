@@ -3,11 +3,12 @@ package io.github.qumn.test.config
 import io.github.qumn.starter.ktorm.KtormAutoConfiguration
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.testcontainers.containers.PostgreSQLContainer
 
-@Configuration
+@TestConfiguration
 @Import(
     value = [
         KtormAutoConfiguration::class,

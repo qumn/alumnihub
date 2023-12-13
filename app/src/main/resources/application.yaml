@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: qumn
-    username: qumn
-    url: jdbc:postgresql://49.235.108.166:5432/qumn
+    password: alumnihub
+    username: alumnihub
+    url: jdbc:postgresql://localhost:5432/alumnihub
     driver-class-name: org.postgresql.Driver
 
 logging:
