@@ -7,5 +7,5 @@ dependencies {
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.boot.jdbc.starter)
     api(libs.ktorm.jackson)
-    api(project(":commons:ktorm"))
+    api(project(":common:ktorm"))
 }

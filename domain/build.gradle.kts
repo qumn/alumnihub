@@ -6,11 +6,11 @@ plugins {
 
 dependencies {
     implementation(libs.logging)
-    implementation(project(":commons:util"))
+    implementation(project(":common:util"))
     implementation(project(":framework"))
     implementation(project(":starter:ktorm-spring-boot-starter"))
 
-    testImplementation(project(":commons:test"))
+    testImplementation(project(":common:test"))
 }
 
 systemProperty("junit.jupiter.execution.parallel.enabled", "true")

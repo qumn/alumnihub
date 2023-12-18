@@ -8,3 +8,4 @@ spring:
 logging:
   level:
     org.ktorm: debug
+    org.springframework.security: trace
