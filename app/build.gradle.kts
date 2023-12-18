@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":framework"))
-
-    implementation(project(":domain"))
+    implementation(project(":domain:trade"))
+    implementation(project(":domain:system"))
 }

@@ -12,11 +12,16 @@ plugins {
 
 rootProject.name = "alumnihub"
 include("app")
-include("domain")
+
+include("domain:trade")
+include("domain:system")
+include("domain:system:api")
+
 include("common:ktorm")
-include("common:test")
+include("framework:test")
 include("common:util")
-include("framework")
+
+include("framework:security")
 include("starter:ktorm-spring-boot-starter")
 
 
