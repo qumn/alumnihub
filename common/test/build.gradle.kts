@@ -20,5 +20,5 @@ dependencies {
     }
 
     implementation(project(":starter:ktorm-spring-boot-starter"))
-    implementation(project(":commons:util"))
+    implementation(project(":common:util"))
 }

@@ -13,9 +13,9 @@ plugins {
 rootProject.name = "alumnihub"
 include("app")
 include("domain")
-include("commons:ktorm")
-include("commons:test")
-include("commons:util")
+include("common:ktorm")
+include("common:test")
+include("common:util")
 include("framework")
 include("starter:ktorm-spring-boot-starter")
 
@@ -45,7 +45,7 @@ dependencyResolutionManagement {
                 "org.springframework.boot",
                 "spring-boot-testcontainers"
             ).withoutVersion()
-            library("spring-boot-security", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
+            library("spring-boot-security-starter", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
 
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 

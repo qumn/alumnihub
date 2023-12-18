@@ -8,6 +8,6 @@ dependencies {
     api(libs.ktorm.postgresql)
     api(libs.ktorm.jackson)
     api(libs.postgresql)
-    testImplementation(project(":commons:test"))
+    testImplementation(project(":common:test"))
     testRuntimeOnly(libs.h2)
 }
