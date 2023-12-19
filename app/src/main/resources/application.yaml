@@ -9,3 +9,7 @@ logging:
   level:
     org.ktorm: debug
     org.springframework.security: trace
+
+security:
+  key: whatever_whatever_whatever_whatever
+  validity: 7200 # 单位秒, 两个小时

@@ -18,6 +18,7 @@ interface UserEntity : BaseEntity<UserEntity> {
 
     var uid: Long
     var name: String
+    var password: String
     var gender: Gender
     var birthDay: Instant?
     var phone: String
@@ -27,6 +28,7 @@ interface UserEntity : BaseEntity<UserEntity> {
 object UserTable : BaseTable<UserEntity>("sys_user") {
     val uid = long("uid").bindTo { it.uid }
     val name = varchar("name").bindTo { it.name }
+    val password = varchar("password").bindTo { it.password }
     val gender = enum<Gender>("gender").bindTo { it.gender }
     val birthDay = timestamp("birth_day").bindTo { it.birthDay }
     val phone = varchar("phone").bindTo { it.phone }

@@ -51,6 +51,9 @@ dependencyResolutionManagement {
                 "spring-boot-testcontainers"
             ).withoutVersion()
             library("spring-boot-security-starter", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
+            library("jjwt-api", "io.jsonwebtoken","jjwt-api").version("0.12.3")
+            library("jjwt-impl", "io.jsonwebtoken","jjwt-impl").version("0.12.3")
+            library("jjwt-jackson", "io.jsonwebtoken","jjwt-jackson").version("0.12.3")
 
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 
