@@ -1,9 +1,6 @@
 package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.domain.trade.model.CompletedTrade
-import io.github.qumn.domain.trade.model.PendingTrade
-import io.github.qumn.domain.trade.model.ReservedTrade
-import io.github.qumn.domain.trade.model.Trade
+import io.github.qumn.domain.trade.model.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.add
@@ -55,6 +52,7 @@ class TradeDatabaseRepository(
             is PendingTrade -> insertPendingTrade(trade)
             is ReservedTrade -> throw IllegalArgumentException("can not directly insert a reserved trade")
             is CompletedTrade -> throw IllegalArgumentException("can not directly insert a completed trade")
+            is TradeInfo -> throw IllegalArgumentException("TradeInfo should never used independently")
         }
     }
 
@@ -76,6 +74,7 @@ class TradeDatabaseRepository(
             is PendingTrade -> updatePendingTrade(trade)
             is ReservedTrade -> updateReservedTrade(trade)
             is CompletedTrade -> updateCompletedTrade(trade)
+            is TradeInfo -> throw IllegalArgumentException("TradeInfo should never used independently")
         }
     }
 

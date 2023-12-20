@@ -12,24 +12,30 @@ sealed interface Trade {
 }
 
 /**
+ * be used to delegate the trade
+ * should never have used independently
+ */
+data class TradeInfo(
+    override val id: Long,
+    override val goods: Goods,
+    override val sellerId: Long,
+) : Trade
+
+/**
  * waiting for buyer to reserve, only one buyer can reserve
  * and only the goods can be changed when the trade is pending
  */
 data class PendingTrade(
-    override val id: Long,
-    override val sellerId: Long, // the seller id
-    override val goods: Goods,
+    private val info: TradeInfo,
     val desiredBuyerIds: MutableList<Long>,
-) : Trade {
+) : Trade by info {
     fun desiredBy(buyer: User) {
         this.desiredBuyerIds.add(buyer.uid)
     }
 
     fun reserve(buyer: User): ReservedTrade {
         return ReservedTrade(
-            this.id,
-            this.goods,
-            this.sellerId,
+            info,
             buyer.uid,
             nowMicros()
         )
@@ -38,18 +44,14 @@ data class PendingTrade(
 }
 
 data class ReservedTrade(
-    override val id: Long,
-    override val goods: Goods,
-    override val sellerId: Long,
+    val info: TradeInfo,
     val buyerId: Long,
     val reservedAt: Instant,
-) : Trade {
+) : Trade by info {
     fun complete(): CompletedTrade {
         return CompletedTrade(
-            this.id,
-            this.goods,
-            this.sellerId,
-            this.buyerId,
+            info,
+            buyerId,
             nowMicros()
         )
     }
@@ -57,10 +59,7 @@ data class ReservedTrade(
 }
 
 data class CompletedTrade(
-    override val id: Long,
-    override val goods: Goods,
-    override val sellerId: Long,
+    private val info: TradeInfo,
     val buyerId: Long,
     val completedAt: Instant,
-) : Trade {
-}
+) : Trade by info
