@@ -24,13 +24,13 @@ class SecurityController(
         return loginUser.toJwt(securityProperties)
     }
 
-    @GetMapping("/me")
-    fun me(): LoginUser {
-        return LoginUser.current()
-    }
-
     data class LoginRequest(
         val username: String,
         val password: String,
     )
+
+    @GetMapping("/me")
+    fun me(): LoginUser {
+        return LoginUser.current()
+    }
 }

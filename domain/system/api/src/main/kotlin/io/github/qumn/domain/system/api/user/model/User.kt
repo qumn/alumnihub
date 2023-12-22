@@ -10,10 +10,11 @@ enum class Gender {
 data class User(
     val uid: Long,
     val name: String,
+    val password: String,
     val gender: Gender,
     val birthDay: Instant?,
     val phone: Phone,
-    val email: Email,
+    val email: Email?,
 )
 
 data class Phone(val number: String) {

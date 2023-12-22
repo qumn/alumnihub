@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     implementation(project(":domain:system:api"))
-    implementation(libs.spring.boot.axon.starter)
+    implementation(project(":starter:axon-spring-boot-starter"))
 }

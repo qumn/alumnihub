@@ -23,6 +23,7 @@ include("common:util")
 
 include("framework:security")
 include("starter:ktorm-spring-boot-starter")
+include("starter:axon-spring-boot-starter")
 
 
 val ktormVersion: String by settings

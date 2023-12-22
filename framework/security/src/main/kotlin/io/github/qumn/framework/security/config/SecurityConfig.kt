@@ -31,6 +31,7 @@ class SecurityConfig {
 
             authorizeHttpRequests {
                 authorize("/security/login", permitAll) // 授权登录请求
+                authorize("/users/register", permitAll) // 授权注册
                 authorize(anyRequest, authenticated)
             }
 
