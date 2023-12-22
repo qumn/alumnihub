@@ -22,7 +22,7 @@ interface UserEntity : BaseEntity<UserEntity> {
     var gender: Gender
     var birthDay: Instant?
     var phone: String
-    var email: String
+    var email: String?
 }
 
 object UserTable : BaseTable<UserEntity>("sys_user") {

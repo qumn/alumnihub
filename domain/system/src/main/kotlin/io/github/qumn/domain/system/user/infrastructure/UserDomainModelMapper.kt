@@ -14,7 +14,8 @@ class UserDomainModelMapper {
             gender = entity.gender,
             birthDay = entity.birthDay,
             phone = Phone(entity.phone),
-            email = Email(entity.email)
+            password = entity.password,
+            email = entity.email?.let(::Email)
         )
     }
 }

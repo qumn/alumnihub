@@ -1,4 +1,4 @@
-package io.github.qumn.starter.ktorm
+package io.github.qumn.starter.ktorm.config
 
 import io.github.qumn.ktorm.base.database
 import io.github.qumn.ktorm.dialet.KtAdmPostgreSqlDialect
