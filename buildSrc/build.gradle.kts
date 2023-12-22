@@ -10,7 +10,7 @@ File(projectDir.parentFile, "gradle.properties").inputStream().use {
     val properties = Properties()
     properties.load(it)
     listOf(
-        "kotlin", "springBoot", "springDependencyManagement"
+        "kotlin", "springBoot", "springDependencyManagement", "axon"
     ).forEach { library ->
         versions[library + "Version"] = properties.getProperty(library + "Version")
     }
