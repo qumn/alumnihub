@@ -32,6 +32,7 @@ val kotestExtensionSpringVersion: String by settings
 val kotestExtensionTestContainersVersion: String by settings
 val kotlinLoggingVersion: String by settings
 val springmockkVersion: String by settings
+val axonVersion: String by settings
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -54,6 +55,8 @@ dependencyResolutionManagement {
             library("jjwt-api", "io.jsonwebtoken","jjwt-api").version("0.12.3")
             library("jjwt-impl", "io.jsonwebtoken","jjwt-impl").version("0.12.3")
             library("jjwt-jackson", "io.jsonwebtoken","jjwt-jackson").version("0.12.3")
+            // axon
+            library("spring-boot-axon-starter", "org.axonframework", "axon-spring-boot-starter").withoutVersion()
 
             library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
 

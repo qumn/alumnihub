@@ -19,7 +19,13 @@ data class TradeInfo(
     override val id: Long,
     override val goods: Goods,
     override val sellerId: Long,
-) : Trade
+) : Trade {
+    companion object {
+        fun canNotBeUsedIndependently(): Nothing {
+            throw IllegalArgumentException("TradeInfo should never used independently")
+        }
+    }
+}
 
 /**
  * waiting for buyer to reserve, only one buyer can reserve

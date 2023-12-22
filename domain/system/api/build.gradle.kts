@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
     implementation(project(":framework:test"))
+    implementation(project(":common:util"))
 }

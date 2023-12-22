@@ -1,9 +1,6 @@
 package io.github.qumn.domain.trade.infrastructure
 
-import io.github.qumn.domain.trade.model.CompletedTrade
-import io.github.qumn.domain.trade.model.PendingTrade
-import io.github.qumn.domain.trade.model.ReservedTrade
-import io.github.qumn.domain.trade.model.Trade
+import io.github.qumn.domain.trade.model.*
 
 
 fun TradeEntity.toDomain(): Trade {
@@ -20,10 +17,12 @@ private fun toPendingTrade(tradeEntity: TradeEntity): PendingTrade {
     }
 
     return PendingTrade(
-        tradeEntity.id,
-        sellerId = tradeEntity.sellerId,
+        info = TradeInfo(
+            tradeEntity.id,
+            goods = tradeEntity.goods.toDomainModel(),
+            sellerId = tradeEntity.sellerId
+        ),
         desiredBuyerIds = tradeEntity.desiredBuyerIds.toMutableList(),
-        goods = tradeEntity.goods.toDomainModel()
     )
 }
 
@@ -33,10 +32,12 @@ private fun toReservedTrade(tradeEntity: TradeEntity): ReservedTrade {
     }
 
     return ReservedTrade(
-        tradeEntity.id,
-        sellerId = tradeEntity.sellerId,
+        info = TradeInfo(
+            id = tradeEntity.id,
+            sellerId = tradeEntity.sellerId,
+            goods = tradeEntity.goods.toDomainModel(),
+        ),
         buyerId = tradeEntity.buyerId!!,
-        goods = tradeEntity.goods.toDomainModel(),
         reservedAt = tradeEntity.reservedAt!!
     )
 }
@@ -47,10 +48,12 @@ private fun toCompletedTrade(tradeEntity: TradeEntity): CompletedTrade {
     }
 
     return CompletedTrade(
-        tradeEntity.id,
-        sellerId = tradeEntity.sellerId,
+        info = TradeInfo(
+            id = tradeEntity.id,
+            sellerId = tradeEntity.sellerId,
+            goods = tradeEntity.goods.toDomainModel()
+        ),
         buyerId = tradeEntity.buyerId!!,
-        goods = tradeEntity.goods.toDomainModel(),
         completedAt = tradeEntity.completedAt!!
     )
 }

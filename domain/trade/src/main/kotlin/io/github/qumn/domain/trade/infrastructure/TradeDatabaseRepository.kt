@@ -52,7 +52,7 @@ class TradeDatabaseRepository(
             is PendingTrade -> insertPendingTrade(trade)
             is ReservedTrade -> throw IllegalArgumentException("can not directly insert a reserved trade")
             is CompletedTrade -> throw IllegalArgumentException("can not directly insert a completed trade")
-            is TradeInfo -> throw IllegalArgumentException("TradeInfo should never used independently")
+            is TradeInfo -> TradeInfo.canNotBeUsedIndependently()
         }
     }
 
@@ -74,7 +74,7 @@ class TradeDatabaseRepository(
             is PendingTrade -> updatePendingTrade(trade)
             is ReservedTrade -> updateReservedTrade(trade)
             is CompletedTrade -> updateCompletedTrade(trade)
-            is TradeInfo -> throw IllegalArgumentException("TradeInfo should never used independently")
+            is TradeInfo -> TradeInfo.canNotBeUsedIndependently()
         }
     }
 

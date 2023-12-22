@@ -9,9 +9,11 @@ class TradeFactory {
 
         fun create(sellerId: Long, goods: Goods): PendingTrade {
             return PendingTrade(
-                id = IdUtil.nextId(),
-                sellerId = sellerId,
-                goods = goods,
+                info = TradeInfo(
+                    id = IdUtil.nextId(),
+                    sellerId = sellerId,
+                    goods = goods,
+                ),
                 desiredBuyerIds = mutableListOf()
             )
         }
@@ -19,9 +21,11 @@ class TradeFactory {
         fun create(sellerId: Long, goodsDesc: String, goodsPrice: Int, goodsImgs: List<String>): PendingTrade {
             val goods = createGoods(goodsDesc, goodsPrice, goodsImgs)
             return PendingTrade(
-                id = IdUtil.nextId(),
-                sellerId = sellerId,
-                goods = goods,
+                info = TradeInfo(
+                    id = IdUtil.nextId(),
+                    sellerId = sellerId,
+                    goods = goods,
+                ),
                 desiredBuyerIds = mutableListOf()
             )
         }
