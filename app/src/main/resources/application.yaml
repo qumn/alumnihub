@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: alumnihub
-    username: alumnihub
-    url: jdbc:postgresql://localhost:5432/alumnihub
+    password: postgres
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
 
 logging:

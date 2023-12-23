@@ -15,7 +15,6 @@ class UserController(
 
     @PostMapping("/register")
     fun register(@RequestBody registerReq: RegisterReq) {
-//        val registeredUser =  UserFactory.create(registerReq.username, registerReq.password, registerReq.phoneNumber)
         val registeredUserCommand = RegisteredUserCommand(
             username = registerReq.username,
             password = registerReq.password,

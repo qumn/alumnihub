@@ -7,9 +7,8 @@ import io.github.qumn.framework.security.LoginUser
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.inList
-import org.ktorm.entity.filter
-import org.ktorm.entity.find
-import org.ktorm.entity.map
+import org.ktorm.entity.*
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,10 +35,19 @@ class UserRepository(
         }
     }
 
-    override fun login(username: String, encryptedPassword: String): LoginUser {
+    override fun save(user: User) {
+        val entity = userDomainModelMapper.toEntity(user)
+        if (database.users.any { it.uid eq user.uid }) {
+            database.users.update(entity)
+        } else {
+            database.users.add(entity)
+        }
+    }
+
+    override fun login(username: String, match: (encrypted: String) -> Boolean): LoginUser {
         val user =
             database.users.find { UserTable.name eq username } ?: throw IllegalArgumentException("user not found")
-        if (user.password != encryptedPassword) {
+        if (!match(user.password)) {
             throw IllegalArgumentException("password is not correct")
         }
         return LoginUser(user.uid, user.name)

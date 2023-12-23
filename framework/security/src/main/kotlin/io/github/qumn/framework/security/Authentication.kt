@@ -6,6 +6,6 @@ package io.github.qumn.framework.security
  */
 interface Authentication {
 
-    fun login(username: String, encryptedPassword: String): LoginUser
+    fun login(username: String, match: (encrypted: String) -> Boolean): LoginUser
 
 }

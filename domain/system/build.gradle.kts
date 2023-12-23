@@ -5,4 +5,6 @@ plugins {
 dependencies {
     implementation(project(":domain:system:api"))
     implementation(project(":starter:axon-spring-boot-starter"))
+
+    implementation(project(":common:util"))
 }

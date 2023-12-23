@@ -6,4 +6,6 @@ interface Users {
     fun findByIds(uids: Collection<Long>): List<User>
 
     fun findByName(name: String): User?
+
+    fun save(user: User)
 }

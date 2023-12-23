@@ -4,11 +4,7 @@ import io.github.qumn.framework.security.Authentication
 import io.github.qumn.framework.security.LoginUser
 import io.github.qumn.framework.security.config.SecurityProperties
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/security")
@@ -19,8 +15,9 @@ class SecurityController(
 ) {
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): String {
-        val encryptedPassword = passwordEncoder.encode(loginRequest.password)
-        val loginUser = authentication.login(loginRequest.username, encryptedPassword)
+        val loginUser = authentication.login(loginRequest.username) { encrypted ->
+            passwordEncoder.matches(loginRequest.password, encrypted)
+        }
         return loginUser.toJwt(securityProperties)
     }
 
