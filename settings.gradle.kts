@@ -22,6 +22,7 @@ include("framework:test")
 include("common:util")
 
 include("framework:security")
+include("framework:web")
 include("starter:ktorm-spring-boot-starter")
 include("starter:axon-spring-boot-starter")
 

@@ -5,9 +5,7 @@ plugins {
 dependencies {
     implementation(project(":framework:test"))
     implementation(project(":framework:security"))
+    api(project(":framework:web"))
     implementation(project(":starter:ktorm-spring-boot-starter"))
     implementation(project(":starter:axon-spring-boot-starter"))
-
-    api("org.springframework.boot:spring-boot-starter")
-    api("org.springframework.boot:spring-boot-starter-web")
 }
