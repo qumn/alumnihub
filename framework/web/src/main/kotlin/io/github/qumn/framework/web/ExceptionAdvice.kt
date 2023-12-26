@@ -1,6 +1,7 @@
 package io.github.qumn.framework.web
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.qumn.framework.web.common.ExResponse
 import io.github.qumn.framework.web.util.requestToCurl
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
@@ -14,21 +15,25 @@ class ExceptionAdvice {
     val logger = KotlinLogging.logger {}
 
     @ExceptionHandler(BizException::class)
-    fun handleBizException(e: BizException, req: HttpServletRequest): ResponseEntity<String> {
+    fun handleBizException(e: BizException, req: HttpServletRequest): ResponseEntity<ExResponse> {
         e.printStackTrace()
         logger.debug {
             "encounter a business exception can be reproduce by\n ${requestToCurl(req)}"
         }
-        return ResponseEntity.status(e.code).body(e.msg)
+        return ResponseEntity
+            .status(e.code)
+            .body(ExResponse(e.msg))
     }
 
     @ExceptionHandler(Exception::class)
-    fun defaultExceptionHandler(e: Exception, req: HttpServletRequest): ResponseEntity<String> {
+    fun defaultExceptionHandler(e: Exception, req: HttpServletRequest): ResponseEntity<ExResponse> {
         e.printStackTrace()
         logger.debug {
             "encounter a exception can be reproduce by\n ${requestToCurl(req)}"
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("internal error")
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ExResponse(e.message ?: "unknown error"))
     }
 
 }

@@ -5,6 +5,10 @@ interface BizError {
     val msg: String
 
     fun toThrow(): Nothing {
-        throw BizException(code, msg)
+        when (this.code) {
+            BizHttpStatus.NOT_ALLOWED.code -> throw BizNotAllowedException(this.msg)
+            BizHttpStatus.ARGUMENT_ERROR.code -> throw BizArgumentException(this.msg)
+            else -> throw BizException(this.code, this.msg)
+        }
     }
 }
