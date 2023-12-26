@@ -8,7 +8,6 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.inList
 import org.ktorm.entity.*
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,19 +17,19 @@ class UserRepository(
 ) : Users, Authentication {
 
     override fun findByIds(uids: Collection<Long>): List<User> {
-        return database.users.filter { UserTable.uid inList uids }.map {
+        return database.users.filter { it.uid inList uids }.map {
             userDomainModelMapper.toUser(it)
         }
     }
 
     override fun findById(uid: Long): User? {
-        return database.users.find { UserTable.uid eq uid }?.let {
+        return database.users.find { it.uid eq uid }?.let {
             userDomainModelMapper.toUser(it)
         }
     }
 
     override fun findByName(name: String): User? {
-        return database.users.find { UserTable.name eq name }?.let {
+        return database.users.find { it.name eq name }?.let {
             userDomainModelMapper.toUser(it)
         }
     }
