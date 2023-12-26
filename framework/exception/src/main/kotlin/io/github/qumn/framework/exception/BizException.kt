@@ -1,4 +1,4 @@
-package io.github.qumn.framework.web
+package io.github.qumn.framework.exception
 
 open class BizException(
     open val code: Int,

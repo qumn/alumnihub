@@ -1,11 +1,9 @@
 package io.github.qumn.domain.system.api.user.model
 
+import io.github.qumn.framework.exception.BizArgumentError
+import io.github.qumn.framework.exception.bizRequire
 import java.time.Instant
 
-
-enum class Gender {
-    FEMALE, MALE, UNKNOWN
-}
 
 data class User(
     val uid: Long,
@@ -17,18 +15,22 @@ data class User(
     val email: Email?,
 )
 
+enum class Gender {
+    FEMALE, MALE, UNKNOWN
+}
+
 data class Phone(val number: String) {
     init {
-        require(number.length == 11) {
-            "the length of phone number must be 11"
+        bizRequire(number.length == 11) {
+            BizArgumentError("手机号码不合法")
         }
     }
 }
 
 data class Email(val address: String) {
     init {
-        require(address.contains("@")) {
-            "the email address must contains @"
+        bizRequire(address.contains("@")) {
+            BizArgumentError("邮箱地址不合法")
         }
     }
 }

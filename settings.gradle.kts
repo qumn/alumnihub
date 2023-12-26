@@ -18,11 +18,13 @@ include("domain:system")
 include("domain:system:api")
 
 include("common:ktorm")
-include("framework:test")
 include("common:util")
 
 include("framework:security")
+include("framework:test")
 include("framework:web")
+include("framework:exception")
+
 include("starter:ktorm-spring-boot-starter")
 include("starter:axon-spring-boot-starter")
 

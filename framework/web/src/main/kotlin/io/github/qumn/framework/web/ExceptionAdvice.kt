@@ -1,6 +1,7 @@
 package io.github.qumn.framework.web
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.qumn.framework.exception.BizException
 import io.github.qumn.framework.web.common.ExResponse
 import io.github.qumn.framework.web.util.requestToCurl
 import jakarta.servlet.http.HttpServletRequest
