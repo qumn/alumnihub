@@ -12,9 +12,8 @@ data class LoginUser(
     companion object {
         val threadLocal: ThreadLocal<LoginUser> = ThreadLocal()
 
-        fun current(): LoginUser {
-            return threadLocal.get() ?: throw SecurityException("未登录")
-        }
+        val current: LoginUser
+            get() = threadLocal.get() ?: throw SecurityException("未登录")
 
         fun fromJwt(jwt: String, config: SecurityProperties): LoginUser? {
             val claims = Jwts.parser()
