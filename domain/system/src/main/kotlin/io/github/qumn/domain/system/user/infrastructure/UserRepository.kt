@@ -22,7 +22,7 @@ class UserRepository(
         }
     }
 
-    override fun findById(uid: Long): User? {
+    override fun tryFindById(uid: Long): User? {
         return database.users.find { it.uid eq uid }?.let {
             userDomainModelMapper.toUser(it)
         }

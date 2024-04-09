@@ -28,6 +28,6 @@ class SecurityController(
 
     @GetMapping("/me")
     fun me(): LoginUser {
-        return LoginUser.current()
+        return LoginUser.current
     }
 }
