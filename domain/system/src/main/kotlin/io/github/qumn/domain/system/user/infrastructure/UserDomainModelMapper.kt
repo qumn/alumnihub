@@ -4,7 +4,6 @@ import io.github.qumn.domain.system.api.user.model.Email
 import io.github.qumn.domain.system.api.user.model.Phone
 import io.github.qumn.domain.system.api.user.model.User
 import org.springframework.stereotype.Component
-import java.time.Instant
 
 @Component
 class UserDomainModelMapper {

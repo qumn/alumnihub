@@ -13,6 +13,8 @@ plugins {
 rootProject.name = "alumnihub"
 include("app")
 
+include("domain:comment")
+include("domain:comment:api")
 include("domain:trade")
 include("domain:system")
 include("domain:system:api")
