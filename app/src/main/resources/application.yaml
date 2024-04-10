@@ -1,8 +1,8 @@
 spring:
   datasource:
-    password: postgres
-    username: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    username: alumnihub
+    password: alumnihub@123
+    url: jdbc:postgresql://49.235.108.166:5432/alumnihub
     driver-class-name: org.postgresql.Driver
 
 logging:
@@ -13,3 +13,6 @@ logging:
 security:
   key: whatever_whatever_whatever_whatever
   validity: 7200 # 单位秒, 两个小时
+axon:
+  axonserver:
+    enabled: false

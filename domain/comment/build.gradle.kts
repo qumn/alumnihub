@@ -5,4 +5,5 @@ plugins {
 dependencies {
     implementation(libs.logging)
     implementation(project(":domain:comment:api"))
+    testImplementation(project(":domain:system:api"))
 }

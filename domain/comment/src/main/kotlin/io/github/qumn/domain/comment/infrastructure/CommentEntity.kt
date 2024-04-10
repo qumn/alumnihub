@@ -15,11 +15,11 @@ interface CommentEntity : Entity<CommentEntity> {
 
     var id: Long
     var parentId: Long?
-    var commenterId: Long
+    var commentedBy: Long
     var subjectType: SubjectType
     var subjectId: Long
     var content: String
-    var createAt: Instant
+    var createdAt: Instant
 
     fun loadReplays(db: Database): List<CommentEntity> {
         var replays = this["replays"]
@@ -36,11 +36,11 @@ interface CommentEntity : Entity<CommentEntity> {
 object CommentTable : Table<CommentEntity>("biz_comment") {
     val id = long("id").primaryKey().bindTo { it.id }
     val parentId = long("parent_id").bindTo { it.parentId }
-    val commenterId = long("commenter_id").bindTo { it.commenterId }
+    val commentedBy = long("commented_by").bindTo { it.commentedBy }
     val subjectType = enum<SubjectType>("subject_type").bindTo { it.subjectType }
     val subjectId = long("subject_id").bindTo { it.subjectId }
     val content = varchar("content").bindTo { it.content }
-    val createAt = timestamp("create_at").bindTo { it.createAt }
+    val createAt = timestamp("created_at").bindTo { it.createdAt }
 }
 
 
@@ -49,13 +49,13 @@ interface CommentLikeEntity : Entity<CommentLikeEntity> {
 
     var cid: Long
     var uid: Long
-    var createAt: Instant
+    var createdAt: Instant
 }
 
 object CommentLikeTable : Table<CommentLikeEntity>("biz_comment_like") {
     val cid = long("cid").primaryKey().bindTo { it.cid }
     val uid = long("uid").primaryKey().bindTo { it.uid }
-    val createAt = timestamp("create_at").bindTo { it.createAt }
+    val createdAt = timestamp("created_at").bindTo { it.createdAt }
 }
 
 val Database.comment

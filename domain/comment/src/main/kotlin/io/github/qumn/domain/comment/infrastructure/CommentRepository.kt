@@ -23,13 +23,6 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         return domainMapper.toDomain(commentEntity)
     }
 
-    private fun recursionLoadReplays(comment: CommentEntity) {
-        val replays = comment.loadReplays(db)
-        for (replay in replays) {
-            recursionLoadReplays(replay)
-        }
-    }
-
     private fun tryFindEntityById(id: Long): CommentEntity? {
         return db.comment.find { it.id eq id }
     }
@@ -64,8 +57,10 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         val newLikedUids = newLikedBy - likedByExisted
 
         // remove the unliked user
-        db.commentLike.removeIf {
-            (it.cid eq commentId) and (it.uid inList unlikedUids)
+        if (unlikedUids.isNotEmpty()) {
+            db.commentLike.removeIf {
+                (it.cid eq commentId) and (it.uid inList unlikedUids)
+            }
         }
 
         // add the new liked user
@@ -73,7 +68,7 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
             CommentLikeEntity {
                 cid = commentId
                 uid = newLikedByUid
-                createAt = Instant.now()
+                createdAt = Instant.now()
             }
         }.forEach {
             db.commentLike.add(it)
@@ -94,11 +89,11 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         return CommentEntity {
             id = comment.id
             parentId = comment.replayTo?.id
-            commenterId = comment.commenterId
+            commentedBy = comment.commenterId
             subjectType = comment.subjectType
             subjectId = comment.subjectId
             content = comment.content
-            createAt = comment.createAt
+            createdAt = comment.createAt
         }
     }
 
