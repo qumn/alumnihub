@@ -5,6 +5,9 @@ import io.github.qumn.ktorm.dialet.KtAdmPostgreSqlDialect
 import io.github.qumn.ktorm.interceptor.*
 import org.ktorm.database.Database
 import org.ktorm.jackson.KtormModule
+import org.ktorm.logging.ConsoleLogger
+import org.ktorm.logging.LogLevel
+import org.ktorm.logging.Slf4jLoggerAdapter
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.context.annotation.Bean
 import javax.sql.DataSource
@@ -25,14 +28,15 @@ class KtormAutoConfiguration(
             .register(UpdateAutoFillVisitorInterceptor())
             .register(InsertAutoFillVisitorInterceptor())
         return Database.connectWithSpringSupport(
-            dataSource, dialect = KtAdmPostgreSqlDialect(
-                interceptor
-            )
+            dataSource,
+//            logger = ConsoleLogger(LogLevel.TRACE),
+            dialect = KtAdmPostgreSqlDialect(interceptor)
         ).also {
             // set the global database variable
             database = it
         }
     }
+
     /**
      * Register Ktorm's Jackson extension to the Spring's container
      * so that we can serialize/deserialize Ktorm entities.

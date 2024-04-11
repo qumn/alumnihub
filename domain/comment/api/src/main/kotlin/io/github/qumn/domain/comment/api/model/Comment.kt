@@ -1,6 +1,5 @@
 package io.github.qumn.domain.comment.api.model
 
-import io.github.qumn.domain.system.api.user.model.User
 import java.time.Instant
 
 
@@ -8,6 +7,9 @@ enum class SubjectType {
     Trade, Forum, LostFound
 }
 
+/**
+ * each comment is itself aggregate root, so the replays only contains one level
+ */
 data class Comment(
     val id: Long,
     var replayTo: Comment?,
@@ -26,16 +28,19 @@ data class Comment(
     val replayCount: Int
         get() = replays.count()
 
-    fun replayBy(uid: Long, content: String): Comment {
-        val replay = CommentFactory.create(uid, this.subjectType, this.subjectId, content)
-        return copy(replays = this.replays + replay)
+    /**
+     * @return first is the new comment, the second is replay
+     */
+    fun replayBy(uid: Long, content: String): Pair<Comment, Comment> {
+        val replay = CommentFactory.create(uid, this.subjectType, this.subjectId, content, this)
+        return copy(replays = this.replays + replay) to replay
     }
 
-    fun likeBy(user: User): Comment {
-        return this.copy(likedUids = likedUids + user.uid)
+    fun likeBy(uid: Long): Comment {
+        return this.copy(likedUids = likedUids + uid)
     }
 
-    fun unlikeBy(user: User): Comment {
-        return this.copy(likedUids = likedUids - user.uid)
+    fun unlikeBy(uid: Long): Comment {
+        return this.copy(likedUids = likedUids - uid)
     }
 }

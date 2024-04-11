@@ -6,28 +6,32 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.map
+import org.ktorm.logging.Logger
 import org.springframework.stereotype.Component
 
 @Component
 class CommentDomainModelMapper(val db: Database) {
-    fun toDomain(entity: CommentEntity, isRecursive: Boolean = true): Comment {
-        val replayTo = if (isRecursive) {
-            entity.parentId?.let { parentId ->
-                db.comment.find { it.id eq parentId }
-            }?.let {
-                toDomain(it, false)
-            }
-        } else null
+    fun toDomain(entity: CommentEntity, isLoadChildren: Boolean = true): Comment {
+        val replayTo = entity.parentId?.let { parentId ->
+            db.comment.find { it.id eq parentId }
+        }?.let {
+            toDomain(it, false)
+        }
+        val replays = if (isLoadChildren) {
+            entity.loadReplays(db)
+                .map { toDomain(it, false) }
+        } else {
+            listOf()
+        }
 
-        return Comment(
-            entity.id,
+        return Comment(entity.id,
             replayTo,
             entity.commentedBy,
             entity.subjectId,
             entity.subjectType,
             entity.content,
             db.commentLike.filter { it.cid eq entity.id }.map { it.uid }.toSet(),
-            replays = entity.loadReplays(db).map(::toDomain),
+            replays, // for performance, we don't load replay's replay
             createAt = entity.createdAt
         )
     }

@@ -2,13 +2,14 @@ package io.github.qumn.domain.comment.infrastructure
 
 import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
+import io.github.qumn.util.time.nowMicros
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
+import org.ktorm.dsl.batchInsert
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.inList
 import org.ktorm.entity.*
 import org.springframework.stereotype.Component
-import java.time.Instant
 
 @Component
 class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMapper) : Comments {
@@ -27,6 +28,18 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         return db.comment.find { it.id eq id }
     }
 
+    private fun findByParentId(pid: Long): List<CommentEntity> {
+        return db.comment.filter { it.parentId eq pid }.toList()
+    }
+
+    private fun findEntityByIds(ids: List<Long>): List<CommentEntity> {
+        return if (ids.isEmpty()) {
+            listOf()
+        } else {
+            db.comment.filter { it.id inList ids }.toList()
+        }
+    }
+
     override fun save(comment: Comment) {
         tryFindEntityById(comment.id)?.let {
             updateComment(comment)
@@ -39,12 +52,14 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         val commentEntity = comment.toEntity()
         db.comment.update(commentEntity)
         syncLikes(comment.id, comment.likedUids)
+        syncReplays(comment)
     }
 
     private fun insertNew(comment: Comment) {
         val commentEntity = comment.toEntity()
         db.comment.add(commentEntity)
         syncLikes(comment.id, comment.likedUids)
+        syncReplays(comment)
     }
 
     /**
@@ -64,14 +79,35 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         }
 
         // add the new liked user
-        newLikedUids.map { newLikedByUid ->
-            CommentLikeEntity {
-                cid = commentId
-                uid = newLikedByUid
-                createdAt = Instant.now()
+        if (newLikedUids.isEmpty()) return
+
+        db.batchInsert(CommentLikeTable) {
+            for (newLikedUid in newLikedUids) {
+                item {
+                    set(it.cid, commentId)
+                    set(it.uid, newLikedUid)
+                    set(it.createdAt, nowMicros())
+                }
             }
-        }.forEach {
-            db.commentLike.add(it)
+        }
+    }
+
+
+    private fun syncReplays(comment: Comment) {
+        val newReplays = comment.replays
+
+        val existReplayIds = findByParentId(comment.id).map { it.id }.toSet()
+        val newReplayIds = newReplays.map { it.id }.toSet()
+
+        val shouldDeleteIds = existReplayIds.toSet() - newReplayIds
+        val shouldSaveReplayIds = newReplayIds - existReplayIds
+        val shouldSaveReplays = newReplays.filter { shouldSaveReplayIds.contains(it.id) }
+
+        if (shouldDeleteIds.isNotEmpty()) {
+            db.comment.removeIf { it.id inList shouldDeleteIds }
+        }
+        for (shouldSaveReplay in shouldSaveReplays) {
+            save(shouldSaveReplay)
         }
     }
 

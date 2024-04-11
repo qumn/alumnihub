@@ -2,6 +2,7 @@ package io.github.qumn.domain.comment.api.model
 
 import io.github.qumn.util.id.IdUtil
 import io.github.qumn.util.id.nextId
+import io.github.qumn.util.time.nowMicros
 import java.time.Instant
 
 class CommentFactory {
@@ -11,18 +12,18 @@ class CommentFactory {
             subjectType: SubjectType,
             subjectId: Long,
             content: String,
-            replayTo: Long? = null,
+            replayTo: Comment? = null,
         ): Comment {
             val commentId = IdUtil.nextId()
 
             return Comment(
                 id = commentId,
-                replayTo = null,
+                replayTo = replayTo,
                 commenterId = uid,
                 subjectType = subjectType,
                 subjectId = subjectId,
                 content = content,
-                createAt = Instant.now(),
+                createAt = nowMicros(),
                 likedUids = setOf(),
                 replays = listOf()
             )
