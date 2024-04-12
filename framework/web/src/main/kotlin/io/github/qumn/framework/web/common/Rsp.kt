@@ -14,6 +14,9 @@ data class Rsp<T>(
         fun <T> success(data: T): Rsp<T> {
             return Rsp(SUCCESS_CODE, "", data)
         }
+        fun success(): Rsp<Unit> {
+            return Rsp(SUCCESS_CODE, "", null)
+        }
 
         fun <T> err(code: Int = 400, msg: String = "未知错误,请联系开发者", data: T? = null): Rsp<T> {
             return Rsp(code, msg, data)

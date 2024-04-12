@@ -6,7 +6,6 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.map
-import org.ktorm.logging.Logger
 import org.springframework.stereotype.Component
 
 @Component

@@ -3,7 +3,6 @@ package io.github.qumn.domain.comment.api.model
 import io.github.qumn.util.id.IdUtil
 import io.github.qumn.util.id.nextId
 import io.github.qumn.util.time.nowMicros
-import java.time.Instant
 
 class CommentFactory {
     companion object {
