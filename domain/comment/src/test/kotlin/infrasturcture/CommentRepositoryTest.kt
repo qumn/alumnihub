@@ -12,9 +12,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 
-@SpringBootTest(classes = [CommentRepository::class, CommentDomainModelMapper::class])
+@Import(value = [CommentRepository::class, CommentDomainModelMapper::class])
 class CommentRepositoryTest(
     private val repository: CommentRepository,
 ) : DBIntegrationSpec({
