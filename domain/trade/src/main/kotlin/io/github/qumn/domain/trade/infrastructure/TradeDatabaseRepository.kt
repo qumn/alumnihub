@@ -12,23 +12,24 @@ import org.springframework.stereotype.Repository
 class TradeDatabaseRepository(
     val database: Database,
 ) : io.github.qumn.domain.trade.model.Trades {
-    override fun findById(id: Long): Trade? {
-        return findEntityById(id)?.toDomain()
+
+    override fun tryFindById(id: Long): Trade? {
+        return tryFindEntityById(id)?.toDomain()
     }
 
-    override fun findPendingTrade(id: Long): PendingTrade? {
-        return findById(id) as? PendingTrade
+    override fun findPendingTrade(id: Long): PendingTrade {
+        return findById(id) as PendingTrade
     }
 
-    override fun findReservedTrade(id: Long): ReservedTrade? {
-        return findById(id) as? ReservedTrade
+    override fun findReservedTrade(id: Long): ReservedTrade {
+        return findById(id) as ReservedTrade
     }
 
-    override fun findCompletedTrade(id: Long): CompletedTrade? {
-        return findById(id) as? CompletedTrade
+    override fun findCompletedTrade(id: Long): CompletedTrade {
+        return findById(id) as CompletedTrade
     }
 
-    private fun findEntityById(id: Long): TradeEntity? {
+    private fun tryFindEntityById(id: Long): TradeEntity? {
         return database.trades.find { Trades.id eq id }
     }
 
@@ -37,7 +38,7 @@ class TradeDatabaseRepository(
      * if the trade not exists, create a new one. otherwise update the existing one.
      */
     override fun save(trade: Trade) {
-        findEntityById(trade.id)?.let {
+        tryFindEntityById(trade.id)?.let {
             updateTrade(trade)
         } ?: run {
             insertNew(trade)

@@ -2,6 +2,7 @@ package io.github.qumn.domain.comment.infrastructure
 
 import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
+import io.github.qumn.domain.comment.api.model.SubjectType
 import io.github.qumn.util.time.nowMicros
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
@@ -17,6 +18,11 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
     override fun delete(id: Long) {
         db.comment.removeIf { it.id eq id }
         clearLikesOf(id)
+    }
+
+    override fun findBySubjectId(subjectType: SubjectType, sid: Long): List<Comment> {
+        return db.comment.filter { (it.subjectType eq subjectType) and (it.subjectId eq sid) }
+            .map { domainMapper.toDomain(it) }
     }
 
     override fun tryFindById(id: Long): Comment? {

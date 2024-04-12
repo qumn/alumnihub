@@ -8,6 +8,7 @@ dependencies {
     implementation(libs.logging)
     implementation(project(":common:util"))
     implementation(project(":domain:system:api"))
+    implementation(project(":domain:comment:api"))
 }
 
 systemProperty("junit.jupiter.execution.parallel.enabled", "true")

@@ -1,5 +1,8 @@
 package io.github.qumn.domain.trade.command
 
+import io.github.qumn.domain.comment.api.model.CommentFactory
+import io.github.qumn.domain.comment.api.model.Comments
+import io.github.qumn.domain.comment.api.model.SubjectType
 import io.github.qumn.domain.system.api.user.model.Users
 import io.github.qumn.domain.trade.model.*
 import io.github.qumn.framework.exception.BizNotAllowedException
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Component
 class TradeCommandHandler(
     val trades: Trades,
     val users: Users,
+    val comments: Comments
 ) {
     /**
      * @return the id of new trade
@@ -79,7 +83,13 @@ class TradeCommandHandler(
      */
     @CommandHandler
     fun handle(createCommentCmd: CreateCommentCmd): Long {
-        // TODO: wait for the comment bounded context
-        return Long.MIN_VALUE
+        val newComment = CommentFactory.create(
+            createCommentCmd.commenterId,
+            SubjectType.Trade,
+            createCommentCmd.tradeId,
+            createCommentCmd.content
+        )
+        comments.save(newComment)
+        return newComment.id
     }
 }

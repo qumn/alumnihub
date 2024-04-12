@@ -11,5 +11,7 @@ interface Comments {
         return tryFindById(id) ?: throw BizNotAllowedException("评论不存在")
     }
 
+    fun findBySubjectId(subjectType: SubjectType, sid: Long) : List<Comment>
+
     fun tryFindById(id: Long): Comment?
 }

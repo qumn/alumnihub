@@ -1,9 +1,12 @@
 package io.github.qumn.domain.trade.web
 
+import io.github.qumn.domain.comment.api.model.Comment
+import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.trade.command.CreateCommentCmd
 import io.github.qumn.domain.trade.command.DesireTradeCmd
 import io.github.qumn.domain.trade.command.PublishIdleGoodsCmd
 import io.github.qumn.domain.trade.command.ReserveTradeCmd
+import io.github.qumn.domain.trade.ext.findByTradeId
 import io.github.qumn.framework.security.LoginUser
 import io.github.qumn.framework.web.common.Rsp
 import io.github.qumn.framework.web.common.toRsp
@@ -15,6 +18,7 @@ import java.time.Instant
 @RequestMapping("/trades")
 class TradeController(
     val commandGateway: CommandGateway,
+    val comments: Comments
 ) {
     @PostMapping
     fun publishIdleGoods(idleGoods: IdleGoods): Rsp<Long> {
@@ -43,6 +47,11 @@ class TradeController(
     fun commentTrade(@PathVariable("tid") tradeId: Long, @RequestBody newComment: NewComment): Rsp<Long> {
         val commenterId = LoginUser.current.uid
         return commandGateway.sendAndWait<Long>(newComment.toCommand(commenterId, tradeId)).toRsp()
+    }
+
+    @GetMapping("/{tid}/comments")
+    fun comment(@PathVariable("tid") tradeId: Long) : Rsp<List<Comment>> {
+        return comments.findByTradeId(tradeId).toRsp()
     }
 
     data class NewComment(
