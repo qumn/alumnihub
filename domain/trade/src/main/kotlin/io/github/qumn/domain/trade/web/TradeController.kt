@@ -2,10 +2,7 @@ package io.github.qumn.domain.trade.web
 
 import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
-import io.github.qumn.domain.trade.command.CreateCommentCmd
-import io.github.qumn.domain.trade.command.DesireTradeCmd
-import io.github.qumn.domain.trade.command.PublishIdleGoodsCmd
-import io.github.qumn.domain.trade.command.ReserveTradeCmd
+import io.github.qumn.domain.trade.command.*
 import io.github.qumn.domain.trade.ext.findByTradeId
 import io.github.qumn.framework.security.LoginUser
 import io.github.qumn.framework.web.common.Rsp
@@ -18,29 +15,31 @@ import java.time.Instant
 @RequestMapping("/trades")
 class TradeController(
     val commandGateway: CommandGateway,
-    val comments: Comments
+    val comments: Comments,
 ) {
+    // command
     @PostMapping
     fun publishIdleGoods(idleGoods: IdleGoods): Rsp<Long> {
         val sellerId = LoginUser.current.uid
         return commandGateway.sendAndWait<Long>(idleGoods.toCommand(sellerId)).toRsp()
     }
 
-    @PutMapping("/desire/{tid}")
+    @PutMapping("/{tid}/desired")
     fun desire(@PathVariable("tid") tradeId: Long) {
         val desiredBy = LoginUser.current.uid
         return commandGateway.sendAndWait(DesireTradeCmd(tradeId, desiredBy))
     }
 
-    @PutMapping("/reserve/{tid}")
+    @PutMapping("{tid}/reserved")
     fun reserve(@PathVariable("tid") tradeId: Long) {
         val buyerId = LoginUser.current.uid
         return commandGateway.sendAndWait(ReserveTradeCmd(tradeId, buyerId))
     }
 
-    @PutMapping("/complete/{tid}")
+    @PutMapping("/{tid}/completed")
     fun complete(@PathVariable("tid") tradeId: Long) {
-        return commandGateway.sendAndWait(tradeId);
+        val operationUserId = LoginUser.current.uid
+        return commandGateway.sendAndWait(CompleteTradeCmd(tradeId, operationUserId));
     }
 
     @PostMapping("/{tid}/comments")
@@ -49,8 +48,14 @@ class TradeController(
         return commandGateway.sendAndWait<Long>(newComment.toCommand(commenterId, tradeId)).toRsp()
     }
 
+    // query
+    @GetMapping("{tid}")
+    fun detail(@PathVariable("tid") tradeId: Long): Rsp<Comment> {
+        return comments.findById(tradeId).toRsp()
+    }
+
     @GetMapping("/{tid}/comments")
-    fun comment(@PathVariable("tid") tradeId: Long) : Rsp<List<Comment>> {
+    fun comment(@PathVariable("tid") tradeId: Long): Rsp<List<Comment>> {
         return comments.findByTradeId(tradeId).toRsp()
     }
 

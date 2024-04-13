@@ -1,10 +1,13 @@
 package io.github.qumn.framework.web.common
 
+import kotlinx.serialization.Serializable
+
 const val SUCCESS_CODE: Int = 200
 
 /**
  * a class for warping the real data to client
  */
+@Serializable
 data class Rsp<T>(
     val code: Int,
     val msg: String,
@@ -14,6 +17,7 @@ data class Rsp<T>(
         fun <T> success(data: T): Rsp<T> {
             return Rsp(SUCCESS_CODE, "", data)
         }
+
         fun success(): Rsp<Unit> {
             return Rsp(SUCCESS_CODE, "", null)
         }

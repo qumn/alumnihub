@@ -59,6 +59,8 @@ class TradeCommandHandler(
     fun handle(completeTradeCmd: CompleteTradeCmd) {
         when (val trade = trades.findById(completeTradeCmd.tradeId)) {
             is ReservedTrade -> {
+                if (trade.buyerId != completeTradeCmd.operationUserId)
+                    throw BizNotAllowedException("您不是此商品的卖家无法完成此交易")
                 trade.complete()
                 trades.save(trade)
             }
