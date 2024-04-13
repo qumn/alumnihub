@@ -36,6 +36,11 @@ class SecurityConfig {
             }
 
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtTokenFilter)
+            exceptionHandling {
+                accessDeniedHandler = JsonAccessDeniedHandler()
+                authenticationEntryPoint = JsonAuthenticationEntryPoint()
+            }
+
         }
 
         return http.build()
