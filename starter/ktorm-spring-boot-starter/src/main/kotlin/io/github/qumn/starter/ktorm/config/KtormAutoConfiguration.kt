@@ -28,7 +28,7 @@ class KtormAutoConfiguration(
             .register(InsertAutoFillVisitorInterceptor())
         return Database.connectWithSpringSupport(
             dataSource,
-            logger = ConsoleLogger(LogLevel.TRACE),
+//            logger = ConsoleLogger(LogLevel.TRACE),
             dialect = KtAdmPostgreSqlDialect(interceptor)
         ).also {
             // set the global database variable
