@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":common:util"))
     implementation(project(":domain:system:api"))
     implementation(project(":domain:comment:api"))
+    implementation(project(":framework:storage"))
 }
 
 systemProperty("junit.jupiter.execution.parallel.enabled", "true")

@@ -23,6 +23,7 @@ include("common:ktorm")
 include("common:util")
 
 include("framework:security")
+include("framework:storage")
 include("framework:test")
 include("framework:web")
 include("framework:exception")

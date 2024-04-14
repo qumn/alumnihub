@@ -1,5 +1,6 @@
 package io.github.qumn.domain.trade.infrastructure
 
+import io.github.qumn.domain.trade.model.TradeStatus
 import io.github.qumn.ktorm.ext.LongArray
 import io.github.qumn.ktorm.ext.longArray
 import org.ktorm.database.Database
@@ -11,12 +12,6 @@ import org.ktorm.schema.enum
 import org.ktorm.schema.long
 import org.ktorm.schema.timestamp
 import java.time.Instant
-
-enum class TradeStatus {
-    Pending,
-    Reserved,
-    Completed
-}
 
 interface TradeEntity : Entity<TradeEntity> {
     companion object : Entity.Factory<TradeEntity>()

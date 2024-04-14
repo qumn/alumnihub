@@ -4,7 +4,10 @@ import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.trade.command.*
 import io.github.qumn.domain.trade.ext.findByTradeId
+import io.github.qumn.domain.trade.query.TradeDetails
+import io.github.qumn.domain.trade.query.TradeQueryHandler
 import io.github.qumn.framework.security.LoginUser
+import io.github.qumn.framework.storage.model.URN
 import io.github.qumn.framework.web.common.Rsp
 import io.github.qumn.framework.web.common.toRsp
 import org.axonframework.commandhandling.gateway.CommandGateway
@@ -15,11 +18,12 @@ import java.time.Instant
 @RequestMapping("/trades")
 class TradeController(
     val commandGateway: CommandGateway,
-    val comments: Comments,
+    val queryHandler: TradeQueryHandler,
+    val comments: Comments
 ) {
     // command
     @PostMapping
-    fun publishIdleGoods(idleGoods: IdleGoods): Rsp<Long> {
+    fun publishIdleGoods(@RequestBody idleGoods: IdleGoods): Rsp<Long> {
         val sellerId = LoginUser.current.uid
         return commandGateway.sendAndWait<Long>(idleGoods.toCommand(sellerId)).toRsp()
     }
@@ -50,8 +54,8 @@ class TradeController(
 
     // query
     @GetMapping("{tid}")
-    fun detail(@PathVariable("tid") tradeId: Long): Rsp<Comment> {
-        return comments.findById(tradeId).toRsp()
+    fun detail(@PathVariable("tid") tradeId: Long): Rsp<TradeDetails> {
+        return queryHandler.queryTradeDetails(tradeId).toRsp()
     }
 
     @GetMapping("/{tid}/comments")
@@ -69,8 +73,8 @@ class TradeController(
 
     data class IdleGoods(
         val desc: String,
-        val imgs: List<String>,
         val price: Int,
+        val imgs: List<URN> = listOf(),
     ) {
         fun toCommand(sellerId: Long): PublishIdleGoodsCmd {
             return PublishIdleGoodsCmd(sellerId, desc, imgs, price)

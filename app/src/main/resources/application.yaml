@@ -12,7 +12,14 @@ logging:
 
 security:
   key: whatever_whatever_whatever_whatever
-  validity: 7200 # 单位秒, 两个小时
+  validity: 604800 # 单位秒, 7天
 axon:
   axonserver:
     enabled: false
+
+alumnihub:
+  qiniu:
+    access_key: s4SPEO65jbQcaYETip7cdGah3WjAiriKvjM7ucXt
+    secret_key: 6MC03xfL7ugL-wNV5sSJv-6kiAj3E3arZwwpsI81
+    bucket: alumnihub
+    domain: storage.qumn.xyz

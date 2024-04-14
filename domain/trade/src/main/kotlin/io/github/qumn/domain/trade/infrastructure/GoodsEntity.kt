@@ -1,29 +1,29 @@
 package io.github.qumn.domain.trade.infrastructure
 
 import io.github.qumn.domain.trade.model.Goods
-import io.github.qumn.domain.trade.model.Img
+import io.github.qumn.framework.storage.model.URN
 
 // only a value object
 data class GoodsEntity(
     var intro: String,
     var price: Int, // in cent
-    val imgs: Array<String>?,
+    val imgs: Array<URN>?,
 ) {
     companion object {
         fun fromDomainModel(goods: Goods): GoodsEntity {
             return GoodsEntity(
                 intro = goods.desc,
                 price = goods.price.toInt(),
-                imgs = goods.imgs.map { it.url }.toTypedArray()
+                imgs = goods.imgs.toTypedArray()
             )
         }
     }
 
-    fun toDomainModel() : Goods {
+    fun toDomainModel(): Goods {
         return Goods(
             desc = intro,
             price = price.toBigDecimal(),
-            imgs = imgs?.map { Img(it) } ?: emptyList()
+            imgs = imgs?.toList() ?: emptyList()
         )
     }
 
