@@ -22,7 +22,7 @@ class URN(@get:JsonValue val name: String) {
 
 class URL(
     private val urn: URN,
-    private val domain: String = "storage.qumn.xyz",
+    private val domain: String = "sc1i8ek9f.hd-bkt.clouddn.com",
     private val protocol: String = "http",
 ) {
     init {
