@@ -22,6 +22,7 @@ class JsonAccessDeniedHandler : AccessDeniedHandler {
         logger.info { "handle the access denied request" }
         val rspBody = accessDeniedException.message.err()
         rsp.status = 403
+        rsp.contentType = "application/json"
         Json.encodeToStream(rspBody, rsp.outputStream)
         rsp.outputStream.flush()
     }

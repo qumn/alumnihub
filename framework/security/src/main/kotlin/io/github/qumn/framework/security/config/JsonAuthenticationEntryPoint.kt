@@ -17,7 +17,7 @@ class JsonAuthenticationEntryPoint : AuthenticationEntryPoint {
         authException: AuthenticationException,
     ) {
         val rspBody = Rsp(403, "请先登陆", authException.message)
-
+        rsp.contentType = "application/json"
         Json.encodeToStream(rspBody, rsp.outputStream)
     }
 
