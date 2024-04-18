@@ -98,6 +98,11 @@ dependencyResolutionManagement {
             library("postgresql", "org.postgresql", "postgresql").withoutVersion()
             // logging
             library("logging", "io.github.oshai", "kotlin-logging-jvm").version(kotlinLoggingVersion)
+            // jackson
+            library("jackson-annotations", "com.fasterxml.jackson.core", "jackson-annotations").withoutVersion()
+            library("jackson-core", "com.fasterxml.jackson.core", "jackson-core").withoutVersion()
         }
     }
 }
+include("domain:forum")
+findProject(":domain:forum")?.name = "forum"

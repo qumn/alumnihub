@@ -1,11 +1,12 @@
 package io.github.qumn.framework.security
 
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.framework.security.config.SecurityProperties
 import io.jsonwebtoken.Jwts
 import java.util.*
 
 data class LoginUser(
-    val uid: Long,
+    val uid: UID,
     val username: String,
 ) {
 
@@ -30,7 +31,7 @@ data class LoginUser(
                 return null
             }
 
-            return LoginUser(uid, username)
+            return LoginUser(UID(uid), username)
         }
     }
 

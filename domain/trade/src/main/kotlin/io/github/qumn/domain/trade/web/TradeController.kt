@@ -2,6 +2,7 @@ package io.github.qumn.domain.trade.web
 
 import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.trade.command.*
 import io.github.qumn.domain.trade.ext.findByTradeId
 import io.github.qumn.domain.trade.query.TradeDetails
@@ -19,7 +20,7 @@ import java.time.Instant
 class TradeController(
     val commandGateway: CommandGateway,
     val queryHandler: TradeQueryHandler,
-    val comments: Comments
+    val comments: Comments,
 ) {
     // command
     @PostMapping
@@ -66,7 +67,7 @@ class TradeController(
     data class NewComment(
         val content: String,
     ) {
-        fun toCommand(commenterId: Long, tradeId: Long): CreateCommentCmd {
+        fun toCommand(commenterId: UID, tradeId: Long): CreateCommentCmd {
             return CreateCommentCmd(commenterId, tradeId, content, Instant.now())
         }
     }
@@ -76,7 +77,7 @@ class TradeController(
         val price: Int,
         val imgs: List<URN> = listOf(),
     ) {
-        fun toCommand(sellerId: Long): PublishIdleGoodsCmd {
+        fun toCommand(sellerId: UID): PublishIdleGoodsCmd {
             return PublishIdleGoodsCmd(sellerId, desc, imgs, price)
         }
     }

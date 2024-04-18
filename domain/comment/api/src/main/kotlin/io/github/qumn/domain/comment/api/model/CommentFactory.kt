@@ -1,5 +1,6 @@
 package io.github.qumn.domain.comment.api.model
 
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.util.id.IdUtil
 import io.github.qumn.util.id.nextId
 import io.github.qumn.util.time.nowMicros
@@ -7,7 +8,7 @@ import io.github.qumn.util.time.nowMicros
 class CommentFactory {
     companion object {
         fun create(
-            uid: Long,
+            uid: UID,
             subjectType: SubjectType,
             subjectId: Long,
             content: String,

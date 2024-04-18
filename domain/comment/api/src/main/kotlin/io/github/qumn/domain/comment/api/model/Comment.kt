@@ -1,5 +1,6 @@
 package io.github.qumn.domain.comment.api.model
 
+import io.github.qumn.domain.system.api.user.model.UID
 import java.time.Instant
 
 
@@ -13,11 +14,11 @@ enum class SubjectType {
 data class Comment(
     val id: Long,
     var replayTo: Comment?,
-    val commenterId: Long,
+    val commenterId: UID,
     val subjectId: Long,
     val subjectType: SubjectType,
     val content: String,
-    val likedUids: Set<Long>,
+    val likedUids: Set<UID>,
     val replays: List<Comment>,
     val createAt: Instant,
 ) {
@@ -31,16 +32,16 @@ data class Comment(
     /**
      * @return first is the new comment, the second is replay
      */
-    fun replayBy(uid: Long, content: String): Pair<Comment, Comment> {
+    fun replayBy(uid: UID, content: String): Pair<Comment, Comment> {
         val replay = CommentFactory.create(uid, this.subjectType, this.subjectId, content, this)
         return copy(replays = this.replays + replay) to replay
     }
 
-    fun likeBy(uid: Long): Comment {
+    fun likeBy(uid: UID): Comment {
         return this.copy(likedUids = likedUids + uid)
     }
 
-    fun unlikeBy(uid: Long): Comment {
+    fun unlikeBy(uid: UID): Comment {
         return this.copy(likedUids = likedUids - uid)
     }
 }

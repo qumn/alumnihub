@@ -1,11 +1,13 @@
 package io.github.qumn.domain.system.user.infrastructure
 
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.system.api.user.model.User
 import io.github.qumn.domain.system.api.user.model.Users
 import io.github.qumn.domain.system.api.user.query.UserDetails
 import io.github.qumn.domain.system.api.user.query.UserQuery
 import io.github.qumn.framework.security.Authentication
 import io.github.qumn.framework.security.LoginUser
+import io.github.qumn.ktorm.ext.exist
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.inList
@@ -18,13 +20,17 @@ class UserRepository(
     val database: Database,
 ) : Users, UserQuery, Authentication {
 
-    override fun findByIds(uids: Collection<Long>): List<User> {
+    override fun findByIds(uids: Collection<UID>): List<User> {
         return database.users.filter { it.uid inList uids }.map {
             userMapper.toUser(it)
         }
     }
 
-    override fun tryFindById(uid: Long): User? {
+    override fun contains(uid: UID): Boolean {
+        return database.users.exist { it.uid eq uid }
+    }
+
+    override fun tryFindById(uid: UID): User? {
         return database.users.find { it.uid eq uid }?.let {
             userMapper.toUser(it)
         }
@@ -55,7 +61,7 @@ class UserRepository(
     }
 
     // query method
-    override fun tryQueryById(id: Long): UserDetails? {
+    override fun tryQueryById(id: UID): UserDetails? {
         val entity = database.users.find { it.uid eq id } ?: return null
         return userMapper.toDetails(entity)
     }

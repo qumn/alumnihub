@@ -1,5 +1,6 @@
 package io.github.qumn.domain.trade.model
 
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.system.api.user.model.User
 import io.github.qumn.util.time.nowMicros
 import java.time.Instant
@@ -8,7 +9,7 @@ import java.time.Instant
 sealed interface Trade {
     val id: Long
     val goods: Goods
-    val sellerId: Long
+    val sellerId: UID
 }
 
 /**
@@ -18,7 +19,7 @@ sealed interface Trade {
 data class TradeInfo(
     override val id: Long,
     override val goods: Goods,
-    override val sellerId: Long,
+    override val sellerId: UID,
 ) : Trade {
     companion object {
         fun canNotBeUsedIndependently(): Nothing {
@@ -33,10 +34,10 @@ data class TradeInfo(
  */
 data class PendingTrade(
     private val info: TradeInfo,
-    val desiredBuyerIds: MutableList<Long>,
+    val desiredBuyerIds: MutableList<UID>,
 ) : Trade by info {
-    fun desiredBy(buyer: User) {
-        this.desiredBuyerIds.add(buyer.uid)
+    fun desiredBy(uid: UID) {
+        this.desiredBuyerIds.add(uid)
     }
 
     fun reserve(buyer: User): ReservedTrade {
@@ -51,7 +52,7 @@ data class PendingTrade(
 
 data class ReservedTrade(
     val info: TradeInfo,
-    val buyerId: Long,
+    val buyerId: UID,
     val reservedAt: Instant,
 ) : Trade by info {
     fun complete(): CompletedTrade {
@@ -66,6 +67,6 @@ data class ReservedTrade(
 
 data class CompletedTrade(
     private val info: TradeInfo,
-    val buyerId: Long,
+    val buyerId: UID,
     val completedAt: Instant,
 ) : Trade by info

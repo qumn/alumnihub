@@ -30,7 +30,7 @@ class TradeCommandHandler(
         when (val trade = trades.findById(desireTradeCmd.tradeId)) {
             is PendingTrade -> {
                 val user = users.findById(desireTradeCmd.desiredBy)
-                trade.desiredBy(user)
+                trade.desiredBy(user.uid)
                 trades.save(trade)
             }
 
@@ -59,7 +59,7 @@ class TradeCommandHandler(
     fun handle(completeTradeCmd: CompleteTradeCmd) {
         when (val trade = trades.findById(completeTradeCmd.tradeId)) {
             is ReservedTrade -> {
-                if (trade.buyerId != completeTradeCmd.operationUserId)
+                if (trade.buyerId != completeTradeCmd.operationUID)
                     throw BizNotAllowedException("您不是此商品的卖家无法完成此交易")
                 trade.complete()
                 trades.save(trade)

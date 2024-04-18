@@ -1,6 +1,7 @@
 package io.github.qumn.domain.system.user.infrastructure
 
 import io.github.qumn.domain.system.api.user.model.Gender
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.ktorm.base.BaseEntity
 import io.github.qumn.ktorm.base.BaseTable
 import org.ktorm.database.Database
@@ -16,7 +17,7 @@ interface UserEntity : BaseEntity<UserEntity> {
 
     companion object : Entity.Factory<UserEntity>()
 
-    var uid: Long
+    var uid: UID
     var name: String
     var password: String
     var gender: Gender
@@ -26,7 +27,7 @@ interface UserEntity : BaseEntity<UserEntity> {
 }
 
 object UserTable : BaseTable<UserEntity>("sys_user") {
-    val uid = long("uid").bindTo { it.uid }
+    val uid = long("uid").transform({ UID(it) }, { it.value }).bindTo { it.uid }
     val name = varchar("name").bindTo { it.name }
     val password = varchar("password").bindTo { it.password }
     val gender = enum<Gender>("gender").bindTo { it.gender }

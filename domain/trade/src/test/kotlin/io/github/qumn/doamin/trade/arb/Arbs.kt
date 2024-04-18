@@ -1,5 +1,6 @@
 package io.github.qumn.doamin.trade.arb
 
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.trade.model.Goods
 import io.github.qumn.domain.trade.model.PendingTrade
 import io.github.qumn.domain.trade.model.TradeInfo
@@ -10,7 +11,7 @@ import io.kotest.property.arbitrary.*
 
 
 fun Arb.Companion.pendingTrade() = Arb.bind(
-    Arb.id(), Arb.id(), Arb.array(Arb.long()).map { it.toMutableList() }, Arb.goods()
+    Arb.id(), Arb.id().map { UID(it) }, Arb.array(Arb.id().map { UID(it) }).map { it.toMutableList() }, Arb.goods()
 ) { tradeId, sellerId, tradeDesiredBuyerIds, tradeGoods ->
     PendingTrade(
         info = TradeInfo(

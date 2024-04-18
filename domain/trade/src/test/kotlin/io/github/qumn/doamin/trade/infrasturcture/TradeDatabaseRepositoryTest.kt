@@ -3,6 +3,7 @@ package io.github.qumn.doamin.trade.infrasturcture
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.MockkClear
 import io.github.qumn.doamin.trade.arb.pendingTrade
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.system.api.user.model.Users
 import io.github.qumn.domain.system.api.user.test.user
 import io.github.qumn.domain.trade.infrastructure.TradeDatabaseRepository
@@ -28,7 +29,10 @@ class TradeDatabaseRepositoryTest(
             // given
             repository.save(pendingTrade)
 
-            repository.findPendingTrade(pendingTrade.id) shouldBe pendingTrade
+            val beSaved = repository.findPendingTrade(pendingTrade.id)
+            beSaved.desiredBuyerIds shouldBe pendingTrade.desiredBuyerIds
+            beSaved.goods shouldBe pendingTrade.goods
+
         }
     }
 
@@ -64,7 +68,7 @@ class TradeDatabaseRepositoryTest(
         ) { pendingTrade, desiredBuyers ->
             // clear the desiredBuyers be filled arb
             for (buyer in desiredBuyers) {
-                pendingTrade.desiredBy(buyer)
+                pendingTrade.desiredBy(buyer.uid)
             }
             repository.save(pendingTrade)
 

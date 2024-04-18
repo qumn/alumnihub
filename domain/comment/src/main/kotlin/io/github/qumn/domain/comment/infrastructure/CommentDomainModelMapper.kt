@@ -1,6 +1,7 @@
 package io.github.qumn.domain.comment.infrastructure
 
 import io.github.qumn.domain.comment.api.model.Comment
+import io.github.qumn.domain.system.api.user.model.UID
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.filter
@@ -25,11 +26,11 @@ class CommentDomainModelMapper(val db: Database) {
 
         return Comment(entity.id,
             replayTo,
-            entity.commentedBy,
+            UID(entity.commentedBy),
             entity.subjectId,
             entity.subjectType,
             entity.content,
-            db.commentLike.filter { it.cid eq entity.id }.map { it.uid }.toSet(),
+            db.commentLike.filter { it.cid eq entity.id }.map { UID(it.uid) }.toSet(),
             replays, // for performance, we don't load replay's replay
             createAt = entity.createdAt
         )

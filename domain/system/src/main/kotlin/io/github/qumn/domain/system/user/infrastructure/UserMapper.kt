@@ -32,9 +32,9 @@ class UserMapper {
         }
     }
 
-    fun toDetails(entity: UserEntity) :UserDetails {
+    fun toDetails(entity: UserEntity): UserDetails {
         return UserDetails(
-            uid = entity.uid,
+            uid = entity.uid.value,
             name = entity.name,
             gender = entity.gender,
             birthDay = entity.birthDay,

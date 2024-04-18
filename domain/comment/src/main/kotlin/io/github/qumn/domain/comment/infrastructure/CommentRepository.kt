@@ -3,6 +3,7 @@ package io.github.qumn.domain.comment.infrastructure
 import io.github.qumn.domain.comment.api.model.Comment
 import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.comment.api.model.SubjectType
+import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.util.time.nowMicros
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
@@ -71,9 +72,10 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
     /**
      * sync the unliked in database with newLikedBy set
      */
-    private fun syncLikes(commentId: Long, newLikedBy: Set<Long>) {
-        val likedByExisted = likedByUid(commentId)
+    private fun syncLikes(commentId: Long, newLikedBy: Set<UID>) {
+        val likedByExisted = getLikedBy(commentId)
 
+        val newLikedBy = newLikedBy.map { it.value }
         val unlikedUids = likedByExisted - newLikedBy
         val newLikedUids = newLikedBy - likedByExisted
 
@@ -121,7 +123,7 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         db.commentLike.removeIf { it.cid eq cid }
     }
 
-    fun likedByUid(cid: Long): Set<Long> {
+    fun getLikedBy(cid: Long): Set<Long> {
         return db.commentLike.filter { it.cid eq cid }.map { it.uid }.toSet()
     }
 
@@ -131,7 +133,7 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         return CommentEntity {
             id = comment.id
             parentId = comment.replayTo?.id
-            commentedBy = comment.commenterId
+            commentedBy = comment.commenterId.value
             subjectType = comment.subjectType
             subjectId = comment.subjectId
             content = comment.content
