@@ -32,8 +32,8 @@ data class Rsp<T>(
  * wrapper the T, if the T is not null, using the success function
  * otherwise using the err function
  */
-fun <T> T?.toRsp(): Rsp<T> {
-    return this?.success() ?: Rsp.err()
+fun <T> T?.toRsp(errMsg: () -> String = { "未知错误,请联系开发者" }): Rsp<T> {
+    return this?.success() ?: Rsp.err(msg = errMsg())
 }
 
 fun <T> T.success(): Rsp<T> {

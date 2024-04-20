@@ -6,5 +6,6 @@ dependencies {
     implementation(project(":domain:comment"))
     implementation(project(":domain:trade"))
     implementation(project(":domain:system"))
+    implementation(project(":domain:forum"))
     implementation(project(":framework:storage"))
 }

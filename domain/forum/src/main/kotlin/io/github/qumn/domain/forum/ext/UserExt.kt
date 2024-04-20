@@ -4,5 +4,5 @@ import io.github.qumn.domain.forum.model.Post
 import io.github.qumn.domain.system.api.user.model.User
 
 fun User.share(post: Post): Post {
-    return post.addSharer(this)
+    return post.addSharer(this.uid)
 }

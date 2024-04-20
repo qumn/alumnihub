@@ -1,18 +1,29 @@
 package io.github.qumn.domain.forum.model
 
 import io.github.qumn.domain.system.api.user.model.UID
-import io.github.qumn.domain.system.api.user.model.User
 import io.github.qumn.framework.exception.BizNotAllowedException
 import io.github.qumn.framework.storage.model.URN
+import io.github.qumn.util.id.IdUtil
+import io.github.qumn.util.id.nextId
 import java.time.Instant
 
 @JvmInline
-value class PostId(val value: Long) {
+value class PostId(val value: Long) : Comparable<PostId> {
+
+    companion object {
+        fun generate(): PostId {
+            return PostId(IdUtil.nextId())
+        }
+    }
+
     init {
         require(value > 0) {
             throw BizNotAllowedException("id should greater zero")
         }
     }
+
+    override fun compareTo(other: PostId): Int =
+        value.compareTo(other.value)
 }
 
 @JvmInline
@@ -44,12 +55,12 @@ data class Post(
         get() = sharedBy.size
 
 
-    fun addSharer(user: User): Post {
-        return this.copy(sharedBy = this.sharedBy + user.uid)
+    fun addSharer(uid: UID): Post {
+        return this.copy(sharedBy = this.sharedBy + uid)
     }
 
-    fun addThumbUp(user: User): Post {
-        return this.copy(thumbUpBy = this.thumbUpBy + user.uid)
+    fun addThumbUp(uid: UID): Post {
+        return this.copy(thumbUpBy = this.thumbUpBy + uid)
     }
 
 }
