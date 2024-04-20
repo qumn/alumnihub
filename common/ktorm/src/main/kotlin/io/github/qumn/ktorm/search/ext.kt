@@ -1,5 +1,8 @@
 package io.github.qumn.ktorm.search
 
+import io.github.qumn.ktorm.page.Page
+import io.github.qumn.ktorm.page.PageParam
+import io.github.qumn.ktorm.page.page
 import org.ktorm.entity.EntitySequence
 import org.ktorm.entity.filter
 import org.ktorm.schema.BaseTable
@@ -22,6 +25,16 @@ public fun <E : Any, T : BaseTable<E>> EntitySequence<E, T>.search(searchDto: An
     }
     return curr
 }
+
+public fun <E : Any, T : BaseTable<E>> EntitySequence<E, T>.searchPage(searchParam: PageParam): Page<E> {
+    val predicates = buildSearchPredicates(searchParam, sourceTable)
+    var curr = this
+    for (predicate in predicates) {
+        curr = curr.filter { predicate }
+    }
+    return curr.page(searchParam)
+}
+
 
 public fun <D : Any, E : BaseTable<E>> MutableList<ColumnDeclaring<Boolean>>.search(
     searchDto: D,
