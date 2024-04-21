@@ -4,11 +4,15 @@ spring:
     password: alumnihub@123
     url: jdbc:postgresql://49.235.108.166:5432/alumnihub
     driver-class-name: org.postgresql.Driver
-
+    hikari:
+      minimum-idle: 10
+  servlet:
+    multipart:
+      max-file-size: 10MB
 logging:
   level:
     org.ktorm: debug
-    org.springframework.security: trace
+#    org.springframework.security: trace
 
 security:
   key: whatever_whatever_whatever_whatever
@@ -21,5 +25,5 @@ alumnihub:
   qiniu:
     access_key: s4SPEO65jbQcaYETip7cdGah3WjAiriKvjM7ucXt
     secret_key: 6MC03xfL7ugL-wNV5sSJv-6kiAj3E3arZwwpsI81
-    bucket: alumnihub
-    domain: storage.qumn.xyz
+    bucket: alumnihub-zj
+    domain: sc1i8ek9f.hd-bkt.clouddn.com
