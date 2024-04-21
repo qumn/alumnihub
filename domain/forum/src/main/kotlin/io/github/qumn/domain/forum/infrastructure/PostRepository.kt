@@ -1,11 +1,15 @@
 package io.github.qumn.domain.forum.infrastructure
 
+import io.github.qumn.domain.comment.api.model.SubjectType
+import io.github.qumn.domain.comment.api.query.CommentDetails
+import io.github.qumn.domain.comment.api.query.CommentQuery
 import io.github.qumn.domain.forum.model.Post
 import io.github.qumn.domain.forum.model.PostId
 import io.github.qumn.domain.forum.model.Posts
 import io.github.qumn.domain.forum.query.PostDetails
 import io.github.qumn.domain.forum.query.PostPageParam
 import io.github.qumn.domain.forum.query.PostQuery
+import io.github.qumn.domain.system.api.user.query.UserQuery
 import io.github.qumn.ktorm.ext.exist
 import io.github.qumn.ktorm.page.Page
 import io.github.qumn.ktorm.search.searchPage
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Repository
 @Repository
 class PostRepository(
     val db: Database,
+    val userQuery: UserQuery,
+    val commentQuery: CommentQuery,
 ) : Posts, PostQuery {
     override fun tryFindBy(postId: PostId): Post? {
         return tryFindEntityBy(postId)?.toDomain()
@@ -46,10 +52,14 @@ class PostRepository(
     }
 
     override fun page(param: PostPageParam): Page<PostDetails> {
-        return db.posts.searchPage(param).transform { it.toDetails() }
+        return db.posts.searchPage(param).transform { it.toDetails(userQuery) }
     }
 
     override fun tryQueryBy(postId: PostId): PostDetails? {
-        return tryFindEntityBy(postId)?.toDetails()
+        return tryFindEntityBy(postId)?.toDetails(userQuery)
+    }
+
+    override fun queryCommentsBy(pid: PostId): List<CommentDetails> {
+        return commentQuery.queryBy(SubjectType.Forum, pid.value)
     }
 }

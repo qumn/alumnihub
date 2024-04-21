@@ -14,4 +14,8 @@ interface Posts {
     fun delete(postId: PostId)
 
     fun contains(postId: PostId): Boolean
+
+    fun notContains(postId: PostId): Boolean {
+        return !contains(postId)
+    }
 }

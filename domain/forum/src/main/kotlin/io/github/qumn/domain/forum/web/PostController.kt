@@ -1,5 +1,8 @@
 package io.github.qumn.domain.forum.web
 
+import io.github.qumn.domain.comment.api.model.CommentId
+import io.github.qumn.domain.comment.api.query.CommentDetails
+import io.github.qumn.domain.forum.cmd.CreateCommentCmd
 import io.github.qumn.domain.forum.cmd.CreatePostCmd
 import io.github.qumn.domain.forum.cmd.LikePostCmd
 import io.github.qumn.domain.forum.cmd.SharePostCmd
@@ -49,17 +52,37 @@ class PostController(
         cmdGateway.send<Unit>(SharePostCmd(sharer, pid))
     }
 
+    @PostMapping("/{pid}/comments")
+    fun newComment(@PathVariable pid: PostId, @RequestBody newCommentReq: NewCommentReq): Rsp<CommentId> {
+        val commenter = LoginUser.current.uid
+        return cmdGateway.sendAndWait<CommentId>(
+            CreateCommentCmd(
+                commenter = commenter,
+                postId = pid,
+                newCommentReq.content
+            )
+        ).toRsp()
+    }
+
     // query
+    @GetMapping("/{pid}/comments")
+    fun comments(@PathVariable pid: PostId): Rsp<List<CommentDetails>> {
+        return query.queryCommentsBy(pid).toRsp()
+    }
+
     @GetMapping("/{pid}")
     fun find(@PathVariable pid: PostId): Rsp<PostDetails> {
         return query.queryBy(pid).toRsp { "找不到帖子" }
     }
 
     @GetMapping("/page")
-    fun page(param: PostPageParam): Page<PostDetails> {
-        return query.page(param)
+    fun page(param: PostPageParam): Rsp<Page<PostDetails>> {
+        return query.page(param).toRsp()
     }
 
+    data class NewCommentReq(
+        val content: String,
+    )
 
     data class CreatePostReq(
         val title: String,

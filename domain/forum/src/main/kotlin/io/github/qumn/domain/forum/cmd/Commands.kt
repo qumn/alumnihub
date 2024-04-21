@@ -15,10 +15,16 @@ data class CreatePostCmd(
 
 data class LikePostCmd(
     val likedBy: UID,
-    val postId: PostId
+    val postId: PostId,
 )
 
 data class SharePostCmd(
     val sharer: UID,
-    val postId: PostId
+    val postId: PostId,
+)
+
+data class CreateCommentCmd(
+    val commenter: UID,
+    val postId: PostId,
+    val content: String,
 )

@@ -1,5 +1,6 @@
 package io.github.qumn.domain.forum.query
 
+import io.github.qumn.domain.comment.api.query.CommentDetails
 import io.github.qumn.domain.forum.model.PostId
 import io.github.qumn.framework.exception.BizNotAllowedException
 import io.github.qumn.ktorm.page.Page
@@ -26,4 +27,6 @@ interface PostQuery {
     }
 
     fun tryQueryBy(postId: PostId): PostDetails?
+
+    fun queryCommentsBy(pid: PostId): List<CommentDetails>
 }
