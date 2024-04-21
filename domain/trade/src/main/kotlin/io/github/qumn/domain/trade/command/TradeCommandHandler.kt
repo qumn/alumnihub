@@ -1,6 +1,7 @@
 package io.github.qumn.domain.trade.command
 
 import io.github.qumn.domain.comment.api.model.CommentFactory
+import io.github.qumn.domain.comment.api.model.CommentId
 import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.comment.api.model.SubjectType
 import io.github.qumn.domain.system.api.user.model.Users
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component
 class TradeCommandHandler(
     val trades: Trades,
     val users: Users,
-    val comments: Comments
+    val comments: Comments,
 ) {
     /**
      * @return the id of new trade
@@ -84,7 +85,7 @@ class TradeCommandHandler(
      * @return the id of new comment
      */
     @CommandHandler
-    fun handle(createCommentCmd: CreateCommentCmd): Long {
+    fun handle(createCommentCmd: CreateCommentCmd): CommentId {
         val newComment = CommentFactory.create(
             createCommentCmd.commenterId,
             SubjectType.Trade,

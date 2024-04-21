@@ -1,6 +1,7 @@
 package io.github.qumn.domain.trade.web
 
 import io.github.qumn.domain.comment.api.model.Comment
+import io.github.qumn.domain.comment.api.model.CommentId
 import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.trade.command.*
@@ -24,9 +25,9 @@ class TradeController(
 ) {
     // command
     @PostMapping
-    fun publishIdleGoods(@RequestBody idleGoods: IdleGoods): Rsp<Long> {
+    fun publishIdleGoods(@RequestBody idleGoods: IdleGoods): Rsp<CommentId> {
         val sellerId = LoginUser.current.uid
-        return commandGateway.sendAndWait<Long>(idleGoods.toCommand(sellerId)).toRsp()
+        return commandGateway.sendAndWait<CommentId>(idleGoods.toCommand(sellerId)).toRsp()
     }
 
     @PutMapping("/{tid}/desired")
