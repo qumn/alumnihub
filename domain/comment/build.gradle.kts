@@ -7,4 +7,5 @@ dependencies {
     implementation(project(":domain:comment:api"))
     implementation(project(":common:util"))
     implementation(project(":domain:system:api"))
+    testImplementation(project(":domain:system"))
 }

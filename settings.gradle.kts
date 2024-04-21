@@ -16,6 +16,7 @@ include("app")
 include("domain:comment")
 include("domain:comment:api")
 include("domain:trade")
+include("domain:forum")
 include("domain:system")
 include("domain:system:api")
 
@@ -58,10 +59,14 @@ dependencyResolutionManagement {
                 "org.springframework.boot",
                 "spring-boot-testcontainers"
             ).withoutVersion()
-            library("spring-boot-security-starter", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
-            library("jjwt-api", "io.jsonwebtoken","jjwt-api").version("0.12.3")
-            library("jjwt-impl", "io.jsonwebtoken","jjwt-impl").version("0.12.3")
-            library("jjwt-jackson", "io.jsonwebtoken","jjwt-jackson").version("0.12.3")
+            library(
+                "spring-boot-security-starter",
+                "org.springframework.boot",
+                "spring-boot-starter-security"
+            ).withoutVersion()
+            library("jjwt-api", "io.jsonwebtoken", "jjwt-api").version("0.12.3")
+            library("jjwt-impl", "io.jsonwebtoken", "jjwt-impl").version("0.12.3")
+            library("jjwt-jackson", "io.jsonwebtoken", "jjwt-jackson").version("0.12.3")
             // axon
             library("spring-boot-axon-starter", "org.axonframework", "axon-spring-boot-starter").withoutVersion()
 
@@ -104,5 +109,3 @@ dependencyResolutionManagement {
         }
     }
 }
-include("domain:forum")
-findProject(":domain:forum")?.name = "forum"
