@@ -38,7 +38,8 @@ enum class Gender {
     FEMALE, MALE, UNKNOWN
 }
 
-data class Phone(val number: String) {
+@JvmInline
+value class Phone(val number: String) {
     init {
         bizRequire(number.length == 11) {
             BizArgumentError("手机号码不合法")
@@ -46,7 +47,8 @@ data class Phone(val number: String) {
     }
 }
 
-data class Email(val address: String) {
+@JvmInline
+value class Email(val address: String) {
     init {
         bizRequire(address.contains("@")) {
             BizArgumentError("邮箱地址不合法")

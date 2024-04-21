@@ -16,14 +16,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserRepository(
-    val userMapper: UserMapper,
     val database: Database,
 ) : Users, UserQuery, Authentication {
 
     override fun findByIds(uids: Collection<UID>): List<User> {
-        return database.users.filter { it.uid inList uids }.map {
-            userMapper.toUser(it)
-        }
+        return database.users.filter { it.uid inList uids }.map(UserEntity::toDomain)
     }
 
     override fun contains(uid: UID): Boolean {
@@ -31,19 +28,15 @@ class UserRepository(
     }
 
     override fun tryFindById(uid: UID): User? {
-        return database.users.find { it.uid eq uid }?.let {
-            userMapper.toUser(it)
-        }
+        return database.users.find { it.uid eq uid }?.toDomain()
     }
 
     override fun findByName(name: String): User? {
-        return database.users.find { it.name eq name }?.let {
-            userMapper.toUser(it)
-        }
+        return database.users.find { it.name eq name }?.toDomain()
     }
 
     override fun save(user: User) {
-        val entity = userMapper.toEntity(user)
+        val entity = user.toEntity()
         if (database.users.any { it.uid eq user.uid }) {
             database.users.update(entity)
         } else {
@@ -60,10 +53,12 @@ class UserRepository(
         return LoginUser(user.uid, user.name)
     }
 
-    // query method
-    override fun tryQueryById(id: UID): UserDetails? {
-        val entity = database.users.find { it.uid eq id } ?: return null
-        return userMapper.toDetails(entity)
+    override fun queryBy(ids: Collection<UID>): List<UserDetails> {
+        return database.users.filter { it.uid inList ids }.map { it.toDetails() }
     }
 
+    // query method
+    override fun tryQueryById(id: UID): UserDetails? {
+        return database.users.find { it.uid eq id }?.toDetails()
+    }
 }
