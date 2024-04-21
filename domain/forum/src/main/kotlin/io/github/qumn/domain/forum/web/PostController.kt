@@ -75,7 +75,7 @@ class PostController(
         return query.queryBy(pid).toRsp { "找不到帖子" }
     }
 
-    @GetMapping("/page")
+    @GetMapping("/search")
     fun page(param: PostPageParam): Rsp<Page<PostDetails>> {
         return query.page(param).toRsp()
     }

@@ -15,6 +15,17 @@ data class TradeDetails(
     val updatedAt: Instant,
 )
 
+
+data class TradeOverview(
+    val id: Long,
+    val desc: String,
+    val cover: String,
+    val price: Int,
+    val sellerId: Long,
+    val sellerAvatar: String,
+    val sellerName: String,
+)
+
 data class GoodsDetails(
     val desc: String,
     val imgs: List<String>,

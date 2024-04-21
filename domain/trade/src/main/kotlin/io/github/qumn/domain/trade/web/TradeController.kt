@@ -7,11 +7,14 @@ import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.domain.trade.command.*
 import io.github.qumn.domain.trade.ext.findByTradeId
 import io.github.qumn.domain.trade.query.TradeDetails
+import io.github.qumn.domain.trade.query.TradeOverview
 import io.github.qumn.domain.trade.query.TradeQueryHandler
+import io.github.qumn.domain.trade.query.TradeSearchParam
 import io.github.qumn.framework.security.LoginUser
 import io.github.qumn.framework.storage.model.URN
 import io.github.qumn.framework.web.common.Rsp
 import io.github.qumn.framework.web.common.toRsp
+import io.github.qumn.ktorm.page.Page
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
@@ -55,6 +58,11 @@ class TradeController(
     }
 
     // query
+    @GetMapping("/search")
+    fun search(param: TradeSearchParam): Rsp<Page<TradeOverview>> {
+        return queryHandler.queryBy(param).toRsp()
+    }
+
     @GetMapping("{tid}")
     fun detail(@PathVariable("tid") tradeId: Long): Rsp<TradeDetails> {
         return queryHandler.queryTradeDetails(tradeId).toRsp()
