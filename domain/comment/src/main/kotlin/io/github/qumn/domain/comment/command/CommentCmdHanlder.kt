@@ -22,8 +22,8 @@ class CommentCmdHanlder(
 
     @CommandHandler
     fun handle(replayCmd: ReplayCmd) {
-        val comment = comments.findById(replayCmd.replayToId)
-        val (ncomment, _) = comment.replayBy(replayCmd.replayerId, replayCmd.content)
+        val comment = comments.findById(replayCmd.replayTo)
+        val (ncomment, _) = comment.replayBy(replayCmd.replayer, replayCmd.content)
         comments.save(ncomment)
     }
 }

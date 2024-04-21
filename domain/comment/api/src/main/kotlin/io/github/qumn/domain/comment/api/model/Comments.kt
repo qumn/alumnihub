@@ -5,13 +5,13 @@ import io.github.qumn.framework.exception.BizNotAllowedException
 interface Comments {
     fun save(comment: Comment)
 
-    fun delete(id: Long)
+    fun delete(id: CommentId)
 
-    fun findById(id: Long): Comment {
+    fun findById(id: CommentId): Comment {
         return tryFindById(id) ?: throw BizNotAllowedException("评论不存在")
     }
 
-    fun findBySubjectId(subjectType: SubjectType, sid: Long) : List<Comment>
+    fun findBySubjectId(subjectType: SubjectType, sid: Long): List<Comment>
 
-    fun tryFindById(id: Long): Comment?
+    fun tryFindById(id: CommentId): Comment?
 }

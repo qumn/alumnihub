@@ -1,6 +1,8 @@
 package io.github.qumn.domain.comment.api.model
 
 import io.github.qumn.domain.system.api.user.model.UID
+import io.github.qumn.util.id.IdUtil
+import io.github.qumn.util.id.nextId
 import java.time.Instant
 
 
@@ -8,11 +10,20 @@ enum class SubjectType {
     Trade, Forum, LostFound
 }
 
+@JvmInline
+value class CommentId(val value: Long) {
+    companion object {
+        fun generate(): CommentId {
+            return CommentId(IdUtil.nextId())
+        }
+    }
+}
+
 /**
  * each comment is itself aggregate root, so the replays only contains one level
  */
 data class Comment(
-    val id: Long,
+    val id: CommentId,
     var replayTo: Comment?,
     val commenterId: UID,
     val subjectId: Long,

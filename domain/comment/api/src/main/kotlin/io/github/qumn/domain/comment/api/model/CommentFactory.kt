@@ -1,8 +1,6 @@
 package io.github.qumn.domain.comment.api.model
 
 import io.github.qumn.domain.system.api.user.model.UID
-import io.github.qumn.util.id.IdUtil
-import io.github.qumn.util.id.nextId
 import io.github.qumn.util.time.nowMicros
 
 class CommentFactory {
@@ -14,10 +12,8 @@ class CommentFactory {
             content: String,
             replayTo: Comment? = null,
         ): Comment {
-            val commentId = IdUtil.nextId()
-
             return Comment(
-                id = commentId,
+                id = CommentId.generate(),
                 replayTo = replayTo,
                 commenterId = uid,
                 subjectType = subjectType,

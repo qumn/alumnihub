@@ -1,8 +1,11 @@
 package io.github.qumn.domain.comment.infrastructure
 
 import io.github.qumn.domain.comment.api.model.Comment
+import io.github.qumn.domain.comment.api.model.CommentId
 import io.github.qumn.domain.comment.api.model.Comments
 import io.github.qumn.domain.comment.api.model.SubjectType
+import io.github.qumn.domain.comment.api.query.CommentDetails
+import io.github.qumn.domain.comment.api.query.CommentQuery
 import io.github.qumn.domain.system.api.user.model.UID
 import io.github.qumn.util.time.nowMicros
 import org.ktorm.database.Database
@@ -14,9 +17,9 @@ import org.ktorm.entity.*
 import org.springframework.stereotype.Component
 
 @Component
-class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMapper) : Comments {
+class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMapper) : Comments, CommentQuery {
 
-    override fun delete(id: Long) {
+    override fun delete(id: CommentId) {
         db.comment.removeIf { it.id eq id }
         clearLikesOf(id)
     }
@@ -26,20 +29,20 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
             .map { domainMapper.toDomain(it) }
     }
 
-    override fun tryFindById(id: Long): Comment? {
+    override fun tryFindById(id: CommentId): Comment? {
         val commentEntity = tryFindEntityById(id) ?: return null
         return domainMapper.toDomain(commentEntity)
     }
 
-    private fun tryFindEntityById(id: Long): CommentEntity? {
+    private fun tryFindEntityById(id: CommentId): CommentEntity? {
         return db.comment.find { it.id eq id }
     }
 
-    private fun findByParentId(pid: Long): List<CommentEntity> {
+    private fun findByParentId(pid: CommentId): List<CommentEntity> {
         return db.comment.filter { it.parentId eq pid }.toList()
     }
 
-    private fun findEntityByIds(ids: List<Long>): List<CommentEntity> {
+    private fun findEntityByIds(ids: List<CommentId>): List<CommentEntity> {
         return if (ids.isEmpty()) {
             listOf()
         } else {
@@ -72,10 +75,9 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
     /**
      * sync the unliked in database with newLikedBy set
      */
-    private fun syncLikes(commentId: Long, newLikedBy: Set<UID>) {
+    private fun syncLikes(commentId: CommentId, newLikedBy: Set<UID>) {
         val likedByExisted = getLikedBy(commentId)
 
-        val newLikedBy = newLikedBy.map { it.value }
         val unlikedUids = likedByExisted - newLikedBy
         val newLikedUids = newLikedBy - likedByExisted
 
@@ -119,11 +121,11 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         }
     }
 
-    private fun clearLikesOf(cid: Long) {
+    private fun clearLikesOf(cid: CommentId) {
         db.commentLike.removeIf { it.cid eq cid }
     }
 
-    fun getLikedBy(cid: Long): Set<Long> {
+    fun getLikedBy(cid: CommentId): Set<UID> {
         return db.commentLike.filter { it.cid eq cid }.map { it.uid }.toSet()
     }
 
@@ -133,12 +135,21 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         return CommentEntity {
             id = comment.id
             parentId = comment.replayTo?.id
-            commentedBy = comment.commenterId.value
+            commentedBy = comment.commenterId
             subjectType = comment.subjectType
             subjectId = comment.subjectId
             content = comment.content
             createdAt = comment.createAt
         }
+    }
+
+    override fun tryQueryBy(cid: CommentId): CommentDetails? {
+        return db.comment.find { it.id eq cid }?.let { domainMapper.toDetails(it) }
+    }
+
+    override fun queryBy(subjectType: SubjectType, subjectId: Long): List<CommentDetails> {
+        return db.comment.filter { (it.subjectType eq subjectType) and (it.subjectId eq subjectId) }
+            .map { domainMapper.toDetails(it) }
     }
 
 }
