@@ -49,7 +49,7 @@ data class LoginUser(
         val expiration = Date(System.currentTimeMillis() + properties.validity().toMillis())
 
         return Jwts.builder()
-            .subject(uid.toString())
+            .subject(uid.value.toString())
             .claim("una", username)
             .expiration(expiration)
             .signWith(properties.key())
