@@ -24,7 +24,7 @@ class CommentRepository(val db: Database, val domainMapper: CommentDomainModelMa
         clearLikesOf(id)
     }
 
-    override fun findBySubjectId(subjectType: SubjectType, sid: Long): List<Comment> {
+    override fun findBy(subjectType: SubjectType, sid: Long): List<Comment> {
         return db.comment.filter { (it.subjectType eq subjectType) and (it.subjectId eq sid) }
             .map { domainMapper.toDomain(it) }
     }

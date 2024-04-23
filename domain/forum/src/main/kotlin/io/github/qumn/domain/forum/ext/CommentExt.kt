@@ -10,7 +10,7 @@ import io.github.qumn.domain.forum.model.PostId
 
 
 fun Comments.getBy(id: PostId): List<Comment> {
-    return this.findBySubjectId(SubjectType.Forum, id.value)
+    return this.findBy(SubjectType.Forum, id.value)
 }
 
 fun Post.comments(commentQuery: CommentQuery): List<CommentDetails> {

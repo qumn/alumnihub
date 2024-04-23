@@ -7,6 +7,7 @@ import java.time.Instant
 
 data class UserDetails(
     val uid: Long,
+    val avatar: String,
     val name: String,
     val gender: Gender,
     val birthDay: Instant?,

@@ -11,5 +11,5 @@ fun Comment.trade(trades: Trades): Trade {
 }
 
 fun Comments.findByTradeId(id: Long) : List<Comment> {
-    return this.findBySubjectId(SubjectType.Trade, id)
+    return this.findBy(SubjectType.Trade, id)
 }

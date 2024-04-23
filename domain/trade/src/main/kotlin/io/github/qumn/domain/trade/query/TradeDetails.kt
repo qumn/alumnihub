@@ -9,7 +9,7 @@ data class TradeDetails(
     val goods: GoodsDetails,
     val status: TradeStatus,
     val buyerId: UserDetails?,
-    val sellerId: UserDetails,
+    val seller: UserDetails,
     val desiredCount: Int,
     val createdAt: Instant,
     val updatedAt: Instant,

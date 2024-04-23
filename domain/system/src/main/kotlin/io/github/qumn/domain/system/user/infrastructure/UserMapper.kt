@@ -37,7 +37,8 @@ object UserMapper {
             gender = entity.gender,
             birthDay = entity.birthDay,
             phone = Phone(entity.phone),
-            email = entity.email?.let(::Email)
+            email = entity.email?.let(::Email),
+            avatar = "http://sc1i8ek9f.hd-bkt.clouddn.com/personas-1713841553253.svg"
         )
 
     }
