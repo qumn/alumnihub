@@ -19,6 +19,7 @@ include("domain:trade")
 include("domain:forum")
 include("domain:system")
 include("domain:system:api")
+include("domain:lostfound")
 
 include("common:ktorm")
 include("common:util")
