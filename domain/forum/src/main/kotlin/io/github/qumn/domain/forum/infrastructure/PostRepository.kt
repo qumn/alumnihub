@@ -15,10 +15,7 @@ import io.github.qumn.ktorm.page.Page
 import io.github.qumn.ktorm.search.searchPage
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
-import org.ktorm.entity.removeIf
-import org.ktorm.entity.update
+import org.ktorm.entity.*
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -52,7 +49,7 @@ class PostRepository(
     }
 
     override fun page(param: PostPageParam): Page<PostDetails> {
-        return db.posts.searchPage(param).transform { it.toDetails(userQuery) }
+        return db.posts.sortedByDescending { it.id }.searchPage(param).transform { it.toDetails(userQuery) }
     }
 
     override fun tryQueryBy(postId: PostId): PostDetails? {

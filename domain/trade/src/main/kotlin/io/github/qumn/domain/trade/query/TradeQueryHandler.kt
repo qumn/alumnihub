@@ -9,6 +9,7 @@ import io.github.qumn.ktorm.page.page
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
+import org.ktorm.entity.sortedByDescending
 import org.springframework.stereotype.Component
 
 class TradeSearchParam(
@@ -31,7 +32,7 @@ class TradeQueryHandler(
 
 
     fun queryBy(param: TradeSearchParam): Page<TradeOverview> {
-        return db.trades.page(param).transform { it.toOverview() }
+        return db.trades.sortedByDescending { it.id }.page(param).transform { it.toOverview() }
     }
 
     private fun TradeEntity.toDetails() = TradeDetails(
