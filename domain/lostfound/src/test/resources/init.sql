@@ -4,11 +4,12 @@ create table biz_lostfound
 (
     "id"           serial8                                              not null primary key,
     "publisher_id" bigint                                               not null,
-    "owner_id"     bigint                                               not null,
+    "owner_id"     bigint,
     "status"       lostfound_status default 'Missing'::lostfound_status not null,
     "location"     varchar(80)                                          not null,
     "item_desc"    varchar(80)                                          not null,
     "item_imgs"    varchar(80)[]    default '{}'                        not null,
+    "pickup_time"  timestamp        default now()                       not null,
     "created_at"   timestamp        default now()                       not null,
     "updated_at"   timestamp        default now()                       not null
 );

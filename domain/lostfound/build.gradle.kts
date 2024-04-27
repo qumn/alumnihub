@@ -1,5 +1,3 @@
-import org.gradle.internal.classpath.Instrumented.systemProperty
-
 plugins {
     id("io.github.qumn.domain-conventions")
 }
