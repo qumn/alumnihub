@@ -30,7 +30,7 @@ class LostFoundController(
     }
 
     @PutMapping("/{lid}/claim")
-    fun claim(@PathVariable lid: LostFoundID, @RequestBody answers: List<String>) {
+    fun claim(@PathVariable lid: LostFoundID, @RequestBody answers: List<String>): Rsp<Boolean> {
         val ownerId = LoginUser.current.uid
         cmdGateway.sendAndWait<Unit>(
             ClaimCmd(
@@ -39,6 +39,7 @@ class LostFoundController(
                 answers
             )
         )
+        return Rsp.success(true)
     }
 
     @GetMapping("/search")

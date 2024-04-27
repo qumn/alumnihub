@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  * @param operator the operator be used on the field
  * @param columnName if it's blank, then use the field name, otherwise use it
  */
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Operation(val operator: KClass<out Operator<*, *>> = EQ::class, val columnName: String = "")
 

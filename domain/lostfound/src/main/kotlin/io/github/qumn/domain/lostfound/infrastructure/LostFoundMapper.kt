@@ -15,8 +15,7 @@ object LostFoundMapper {
             entity.location,
             entity.questions,
             MissingItem(
-                entity.missingDesc,
-                entity.missingImgs
+                entity.missingDesc, entity.missingImgs
             )
         )
     }
@@ -41,6 +40,7 @@ object LostFoundMapper {
             img,
             entity.missingDesc,
             entity.location,
+            entity.questions.map { it.content },
             publisher.uid,
             publisher.avatar,
             publisher.name,

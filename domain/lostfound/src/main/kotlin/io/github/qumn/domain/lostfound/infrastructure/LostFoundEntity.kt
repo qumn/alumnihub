@@ -29,8 +29,8 @@ interface LostFoundEntity : Entity<LostFoundEntity> {
 
 object LostFoundTable : Table<LostFoundEntity>("biz_lostfound") {
     val id = long("id").transform({ LostFoundID(it) }, { it.value }).primaryKey().bindTo { it.id }
-    val publisherId = long("publisher_id").transform({ UID(it) }, { it.value }).primaryKey().bindTo { it.publisherId }
-    val ownerId = long("owner_id").transform({ UID(it) }, { it.value }).primaryKey().bindTo { it.ownerId }
+    val publisherId = long("publisher_id").transform({ UID(it) }, { it.value }).bindTo { it.publisherId }
+    val ownerId = long("owner_id").transform({ UID(it) }, { it.value }).bindTo { it.ownerId }
     val status = enum<LostFoundStatus>("status").bindTo { it.status }
     val location = varchar("location").bindTo { it.location }
     val missingDesc = varchar("missing_desc").bindTo { it.missingDesc }
