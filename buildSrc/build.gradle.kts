@@ -10,7 +10,7 @@ File(projectDir.parentFile, "gradle.properties").inputStream().use {
     val properties = Properties()
     properties.load(it)
     listOf(
-        "kotlin", "springBoot", "springDependencyManagement", "axon"
+        "kotlin", "springBoot", "springDependencyManagement", "axon", "ksp"
     ).forEach { library ->
         versions[library + "Version"] = properties.getProperty(library + "Version")
     }
@@ -28,6 +28,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${versions["kspVersion"]}")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions["kotlinVersion"]}")
     implementation("org.jetbrains.kotlin:kotlin-serialization:${versions["kotlinVersion"]}")
     implementation("org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin:${versions["kotlinVersion"]}")

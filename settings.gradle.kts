@@ -78,6 +78,8 @@ dependencyResolutionManagement {
             library("ktorm-mysql", "org.ktorm", "ktorm-support-mysql").version(ktormVersion)
             library("ktorm-postgresql", "org.ktorm", "ktorm-support-postgresql").version(ktormVersion)
             library("ktorm-jackson", "org.ktorm", "ktorm-jackson").version(ktormVersion)
+            library("ktorm-ksp-annotation", "org.ktorm", "ktorm-ksp-annotations").version(ktormVersion)
+            library("ktorm-ksp-impl", "org.ktorm", "ktorm-ksp-compiler").version(ktormVersion)
 
             // test
             //library("mockk", "io.mockk", "mockk").version("1.13.6")
